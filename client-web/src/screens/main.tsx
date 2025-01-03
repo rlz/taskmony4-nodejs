@@ -46,18 +46,6 @@ export const MainScreen = observer(function MainScreen(): JSX.Element {
                     })
                 }
                 {
-                    engine.finishedTasks.filter(i => i.finished.toMillis() === appState.today.toMillis()).map((i) => {
-                        console.log('Finished task', i.finished.toISO(), appState.today.toISO())
-                        return (
-                            <FinishedTaskView
-                                key={i.id}
-                                task={i}
-                                onUndone={() => engine.pushTask({ ...i, finished: null })}
-                            />
-                        )
-                    })
-                }
-                {
                     editTask === null && (
                         <TaskEditor
                             onSave={(t) => {
@@ -67,6 +55,17 @@ export const MainScreen = observer(function MainScreen(): JSX.Element {
                             onCancel={() => setEditTask(undefined)}
                         />
                     )
+                }
+                {
+                    engine.finishedTasks.filter(i => i.finished.toMillis() === appState.today.toMillis()).map((i) => {
+                        return (
+                            <FinishedTaskView
+                                key={i.id}
+                                task={i}
+                                onUndone={() => engine.pushTask({ ...i, finished: null })}
+                            />
+                        )
+                    })
                 }
             </Stack>
         </BaseScreen>

@@ -6,6 +6,7 @@ import '@fontsource/roboto/700.css'
 
 import { createTheme, CssBaseline, responsiveFontSizes, ThemeProvider, useMediaQuery } from '@mui/material'
 import { installIntoGlobal } from 'iterator-helpers-polyfill'
+import { autorun } from 'mobx'
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
@@ -57,9 +58,14 @@ function App() {
         void (async () => {
             const localStorage = new LocalStorage(engine)
             await localStorage.loadData()
-            if (authState.authParam !== null) {
-                await syncTasks(authState.authParam, engine, null)
-            }
+
+            autorun(async () => {
+                if (authState.authParam !== null) {
+                    await syncTasks(authState.authParam, engine, null)
+                } else {
+                    engine.clearData()
+                }
+            })
         })()
     }, [])
 

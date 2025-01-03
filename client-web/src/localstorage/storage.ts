@@ -11,7 +11,8 @@ export class LocalStorage {
 
     constructor(engine: Engine) {
         engine.subscribe({
-            onTaskChange: t => this.putTask(t)
+            onTaskChange: t => this.putTask(t),
+            onClearDate: () => this.clearData()
         })
 
         this.engine = engine

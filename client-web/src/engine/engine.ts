@@ -5,6 +5,7 @@ import { Task } from './model'
 
 export interface EngineDataChangeListener {
     onTaskChange: (t: Task) => void | Promise<void>
+    onClearDate: () => void | Promise<void>
 }
 
 export class Engine {
@@ -22,7 +23,8 @@ export class Engine {
                 initialised: observable,
                 finishedTasks: observable.shallow,
                 activeTasks: observable.shallow,
-                pushTask: action
+                pushTask: action,
+                clearData: action
             }
         )
     }
@@ -37,6 +39,13 @@ export class Engine {
         }
 
         this.subscribtions.forEach(i => i.onTaskChange(task))
+    }
+
+    clearData() {
+        this.activeTasks = []
+        this.finishedTasks = []
+
+        this.subscribtions.forEach(i => i.onClearDate())
     }
 
     subscribe(listener: EngineDataChangeListener) {

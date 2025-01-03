@@ -26,9 +26,5 @@ void runServer({
 
         server.register(AUTH_API, { storage: authStorage })
         server.register(TASKS_API, { storage: tasksStorage, auth: authStorage.auth })
-
-        server.get('/', async () => {
-            return { hello: 'world' }
-        })
     }
 })

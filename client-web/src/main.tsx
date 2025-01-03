@@ -9,9 +9,9 @@ import { installIntoGlobal } from 'iterator-helpers-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { NotFound } from 'rlz-engine/dist/client/screens/404'
 import { SignupSigninScreen } from 'rlz-engine/dist/client/screens/SignupSigninScreen'
 
-import { NotFound } from './screens/404'
 import { MainScreen } from './screens/main'
 
 installIntoGlobal()

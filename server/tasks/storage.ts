@@ -1,12 +1,12 @@
 import { DateTime } from 'luxon'
 import { Collection } from 'mongodb'
-import { MongoObject } from 'rlz-engine/dist/server/auth/model'
-import { logger } from 'rlz-engine/dist/server/logger'
-import { MongoStorage } from 'rlz-engine/dist/server/mongo/db'
-import { ApiComparisonObjectV0 } from 'rlz-engine/dist/server/sync/api'
-import { getAll } from 'rlz-engine/dist/server/sync/sync'
+import { logger } from 'rlz-engine/dist/back/logger'
+import { MongoStorage } from 'rlz-engine/dist/back/storage/db'
+import { MongoObject } from 'rlz-engine/dist/back/storage/model'
+import { getAll } from 'rlz-engine/dist/back/storage/sync'
+import { ApiComparisonObjectV0 } from 'rlz-engine/dist/shared/api/sync'
 
-import { ApiTaskV0 } from '../../common/schema'
+import { ApiTaskV0 } from '../../common/tasks'
 
 export class TasksStorage {
     private readonly logger = logger('AuthStorage')

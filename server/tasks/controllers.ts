@@ -1,11 +1,11 @@
 import { FastifyInstance, FastifyRequest, RawServerBase } from 'fastify'
-import fp from 'fastify-plugin'
+import fastifyPlugin from 'fastify-plugin'
 import { DateTime } from 'luxon'
-import { API_GET_OBJECTS_QUERY_STRING_SCHEMA_V0, API_GET_OBJECTS_REQUEST_SCHEMA_V0, API_ITEMS_REQUEST_SCHEMA_V0, API_ITEMS_RESPONSE_SCHEMA_V0, ApiItemsResponseV0 } from 'rlz-engine/dist/server/sync/api'
-import { toValid } from 'rlz-engine/dist/utils/datetime'
+import { API_GET_OBJECTS_QUERY_STRING_SCHEMA_V0, API_GET_OBJECTS_REQUEST_SCHEMA_V0, API_ITEMS_REQUEST_SCHEMA_V0, API_ITEMS_RESPONSE_SCHEMA_V0, ApiItemsResponseV0 } from 'rlz-engine/dist/shared/api/sync'
+import { toValid } from 'rlz-engine/dist/shared/utils/datetime'
 import zodToJsonSchema from 'zod-to-json-schema'
 
-import { API_TASK_SCHEMA_V0 } from '../../common/schema'
+import { API_TASK_SCHEMA_V0 } from '../../common/tasks'
 import { TasksStorage } from './storage'
 
 interface Opts {
@@ -13,7 +13,7 @@ interface Opts {
     auth: (headers: FastifyRequest['headers']) => Promise<string>
 }
 
-export const TASKS_API = fp(
+export const TASKS_API = fastifyPlugin(
     async function tasksApi<T extends RawServerBase>(app: FastifyInstance<T>, { storage, auth }: Opts) {
         app.get(
             '/api/v0/tasks',

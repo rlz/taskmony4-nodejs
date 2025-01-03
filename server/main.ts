@@ -1,7 +1,10 @@
-import { AUTH_ENDPOINTS } from 'rlz-engine/dist/server/auth/auth'
-import { AuthStorage } from 'rlz-engine/dist/server/auth/storage'
-import { MongoStorage } from 'rlz-engine/dist/server/mongo/db'
-import { runServer } from 'rlz-engine/dist/server/server'
+import { AUTH_API } from 'rlz-engine/dist/back/auth/controllers'
+import { AuthStorage } from 'rlz-engine/dist/back/auth/storage'
+import { runServer } from 'rlz-engine/dist/back/server'
+import { MongoStorage } from 'rlz-engine/dist/back/storage/db'
+
+import { TASKS_API } from './tasks/controllers'
+import { TasksStorage } from './tasks/storage'
 
 const PRODUCTION = process.env.NODE_ENV === 'production'
 const DOMAIN = 'app.taskmony.ru'
@@ -18,7 +21,11 @@ void runServer({
         const authStorage = new AuthStorage(mongoStorage)
         await authStorage.init()
 
-        server.register(AUTH_ENDPOINTS, { storage: authStorage })
+        const tasksStorage = new TasksStorage(mongoStorage)
+        await tasksStorage.init()
+
+        server.register(AUTH_API, { storage: authStorage })
+        server.register(TASKS_API, { storage: tasksStorage, auth: authStorage.auth })
 
         server.get('/', async () => {
             return { hello: 'world' }

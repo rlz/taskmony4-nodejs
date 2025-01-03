@@ -2,6 +2,7 @@ import { Box, Paper, Stack, TextField, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 import { JSX } from 'react'
+import { utcToday } from 'rlz-engine/dist/shared/utils/datetime'
 import { uuidv7 } from 'uuidv7'
 
 import { Task } from '../engine/model'
@@ -28,7 +29,7 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
                 lastModified: DateTime.utc(),
                 title: taskTitle,
                 category: 'test',
-                date: DateTime.utc().startOf('day'),
+                date: utcToday(),
                 finished: null
             })
         }

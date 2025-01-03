@@ -1,19 +1,20 @@
 import { Add as AddIcon } from '@mui/icons-material'
-import { Box, Paper, Stack, Typography } from '@mui/material'
-import { DateTime } from 'luxon'
+import { Stack } from '@mui/material'
 import { observer } from 'mobx-react-lite'
 import React, { JSX, useState } from 'react'
 
+import { ActiveTaskView } from '../components/activeTaskView'
 import { BaseScreen } from '../components/baseScreen'
+import { FinishedTaskView } from '../components/finishedTaskView'
 import { TaskEditor } from '../components/taskEditor'
 import { useEngine } from '../engine/engine'
+import { useAppState } from '../state'
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const MainScreen = observer(function MainScreen(): JSX.Element {
+    const appState = useAppState()
     const engine = useEngine()
     const [editTask, setEditTask] = useState<string | null | undefined>(undefined)
-
-    const today = DateTime.utc().startOf('day')
 
     return (
         <BaseScreen
@@ -22,7 +23,7 @@ export const MainScreen = observer(function MainScreen(): JSX.Element {
         >
             <Stack p={1} gap={1}>
                 {
-                    engine.activeTasks.filter(i => i.date >= today).map((i) => {
+                    engine.activeTasks.filter(i => i.date <= appState.today).map((i) => {
                         return i.id === editTask
                             ? (
                                     <TaskEditor
@@ -35,42 +36,25 @@ export const MainScreen = observer(function MainScreen(): JSX.Element {
                                     />
                                 )
                             : (
-                                    <Paper variant={'outlined'}>
-                                        <Stack p={1}>
-                                            <Box>
-                                                { i.title }
-                                            </Box>
-                                            <Stack direction={'row'} gap={1} alignItems={'baseline'}>
-                                                <Box>
-                                                    <Typography variant={'body2'} component={'span'} color={'secondary'}>
-                                                        {'Cat.: '}
-                                                    </Typography>
-                                                    <Typography variant={'body2'} component={'span'}>
-                                                        {i.category}
-                                                    </Typography>
-                                                </Box>
-                                                <Box flexGrow={1}>
-                                                    <Typography variant={'body2'} component={'span'} color={'secondary'}>
-                                                        {'Date: '}
-                                                    </Typography>
-                                                    <Typography variant={'body2'} component={'span'}>
-                                                        {i.date.toFormat('dd LLL yyyy')}
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Typography variant={'body2'} color={'primary'}>
-                                                        <a>{'Done'}</a>
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <Typography variant={'body2'} color={'secondary'}>
-                                                        <a onClick={() => setEditTask(i.id)}>{'Edit'}</a>
-                                                    </Typography>
-                                                </Box>
-                                            </Stack>
-                                        </Stack>
-                                    </Paper>
+                                    <ActiveTaskView
+                                        key={i.id}
+                                        task={i}
+                                        onDone={() => engine.pushTask({ ...i, finished: appState.today })}
+                                        onEdit={() => setEditTask(i.id)}
+                                    />
                                 )
+                    })
+                }
+                {
+                    engine.finishedTasks.filter(i => i.finished.toMillis() === appState.today.toMillis()).map((i) => {
+                        console.log('Finished task', i.finished.toISO(), appState.today.toISO())
+                        return (
+                            <FinishedTaskView
+                                key={i.id}
+                                task={i}
+                                onUndone={() => engine.pushTask({ ...i, finished: null })}
+                            />
+                        )
                     })
                 }
                 {

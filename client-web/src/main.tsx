@@ -18,6 +18,7 @@ import { Engine, EngineContext } from './engine/engine'
 import { syncTasks } from './engine/sync'
 import { LocalStorage } from './localstorage/storage'
 import { MainScreen } from './screens/main'
+import { AppState, AppStateContext } from './state'
 
 installIntoGlobal()
 
@@ -51,6 +52,7 @@ function App() {
         })
     )
 
+    const appState = new AppState()
     const engine = new Engine()
     const authState = useAuthState()
 
@@ -72,10 +74,12 @@ function App() {
     return (
         <React.StrictMode>
             <ThemeProvider theme={theme}>
-                <EngineContext value={engine}>
-                    <CssBaseline />
-                    <RouterProvider router={ROUTER} />
-                </EngineContext>
+                <AppStateContext value={appState}>
+                    <EngineContext value={engine}>
+                        <CssBaseline />
+                        <RouterProvider router={ROUTER} />
+                    </EngineContext>
+                </AppStateContext>
             </ThemeProvider>
         </React.StrictMode>
     )

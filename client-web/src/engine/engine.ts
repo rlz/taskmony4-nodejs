@@ -1,7 +1,7 @@
 import { action, makeObservable, observable } from 'mobx'
 import { createContext, useContext } from 'react'
 
-import { Task } from './model'
+import { ActiveTask, FinishedTask, Task } from './model'
 
 export interface EngineDataChangeListener {
     onTaskChange: (t: Task) => void | Promise<void>
@@ -11,8 +11,8 @@ export interface EngineDataChangeListener {
 export class Engine {
     initialised: boolean = false
 
-    finishedTasks: readonly Task[] = []
-    activeTasks: readonly Task[] = []
+    finishedTasks: readonly FinishedTask[] = []
+    activeTasks: readonly ActiveTask[] = []
 
     private readonly subscribtions: EngineDataChangeListener[] = []
 

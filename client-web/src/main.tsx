@@ -61,7 +61,7 @@ function App() {
 
             autorun(async () => {
                 if (authState.authParam !== null) {
-                    await syncTasks(authState.authParam, engine, null)
+                    await syncTasks(authState, engine, null)
                 } else {
                     engine.clearData()
                 }

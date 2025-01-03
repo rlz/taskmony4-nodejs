@@ -2,7 +2,6 @@ import z from 'zod'
 
 export const API_TASK_SCHEMA_V0 = z.object({
     id: z.string().uuid(),
-    ownerId: z.string().uuid(),
     lastModified: z.string().datetime({ offset: true }),
     category: z.string(),
     title: z.string(),

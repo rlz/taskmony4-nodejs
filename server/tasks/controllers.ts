@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest, RawServerBase } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
 import { DateTime } from 'luxon'
-import { API_GET_OBJECTS_QUERY_STRING_SCHEMA_V0, API_GET_OBJECTS_REQUEST_SCHEMA_V0, API_ITEMS_REQUEST_SCHEMA_V0, API_ITEMS_RESPONSE_SCHEMA_V0, ApiItemsResponseV0 } from 'rlz-engine/dist/shared/api/sync'
+import { API_COMPARISON_OBJECT_SCHEMA_V0, API_GET_OBJECTS_QUERY_STRING_SCHEMA_V0, API_GET_OBJECTS_REQUEST_SCHEMA_V0, API_ITEMS_REQUEST_SCHEMA_V0, API_ITEMS_RESPONSE_SCHEMA_V0, ApiItemsResponseV0 } from 'rlz-engine/dist/shared/api/sync'
 import { toValid } from 'rlz-engine/dist/shared/utils/datetime'
 import zodToJsonSchema from 'zod-to-json-schema'
 
@@ -20,7 +20,7 @@ export const TASKS_API = fastifyPlugin(
             {
                 schema: {
                     querystring: zodToJsonSchema(API_GET_OBJECTS_QUERY_STRING_SCHEMA_V0),
-                    response: { 200: zodToJsonSchema(API_ITEMS_RESPONSE_SCHEMA_V0(API_TASK_SCHEMA_V0)) }
+                    response: { 200: zodToJsonSchema(API_ITEMS_RESPONSE_SCHEMA_V0(API_COMPARISON_OBJECT_SCHEMA_V0)) }
                 }
             },
             async (req, _resp) => {

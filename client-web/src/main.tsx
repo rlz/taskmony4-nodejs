@@ -6,12 +6,16 @@ import '@fontsource/roboto/700.css'
 
 import { createTheme, CssBaseline, responsiveFontSizes, ThemeProvider, useMediaQuery } from '@mui/material'
 import { installIntoGlobal } from 'iterator-helpers-polyfill'
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { NotFound } from 'rlz-engine/dist/client/screens/404'
 import { SignupSigninScreen } from 'rlz-engine/dist/client/screens/SignupSigninScreen'
+import { useAuthState } from 'rlz-engine/dist/client/state/auth'
 
+import { Engine, EngineContext } from './engine/engine'
+import { syncTasks } from './engine/sync'
+import { LocalStorage } from './localstorage/storage'
 import { MainScreen } from './screens/main'
 
 installIntoGlobal()
@@ -46,11 +50,26 @@ function App() {
         })
     )
 
+    const engine = new Engine()
+    const authState = useAuthState()
+
+    useEffect(() => {
+        void (async () => {
+            const localStorage = new LocalStorage(engine)
+            await localStorage.loadData()
+            if (authState.authParam !== null) {
+                await syncTasks(authState.authParam, engine, null)
+            }
+        })()
+    }, [])
+
     return (
         <React.StrictMode>
             <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <RouterProvider router={ROUTER} />
+                <EngineContext value={engine}>
+                    <CssBaseline />
+                    <RouterProvider router={ROUTER} />
+                </EngineContext>
             </ThemeProvider>
         </React.StrictMode>
     )

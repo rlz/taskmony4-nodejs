@@ -5,6 +5,8 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
 import { createTheme, CssBaseline, responsiveFontSizes, ThemeProvider, useMediaQuery } from '@mui/material'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { installIntoGlobal } from 'iterator-helpers-polyfill'
 import { autorun } from 'mobx'
 import React, { useEffect } from 'react'
@@ -74,12 +76,14 @@ function App() {
     return (
         <React.StrictMode>
             <ThemeProvider theme={theme}>
-                <AppStateContext value={appState}>
-                    <EngineContext value={engine}>
-                        <CssBaseline />
-                        <RouterProvider router={ROUTER} />
-                    </EngineContext>
-                </AppStateContext>
+                <LocalizationProvider dateAdapter={AdapterLuxon}>
+                    <AppStateContext value={appState}>
+                        <EngineContext value={engine}>
+                            <CssBaseline />
+                            <RouterProvider router={ROUTER} />
+                        </EngineContext>
+                    </AppStateContext>
+                </LocalizationProvider>
             </ThemeProvider>
         </React.StrictMode>
     )

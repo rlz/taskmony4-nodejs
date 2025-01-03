@@ -2,6 +2,7 @@ import { Box, Paper, Stack, Typography } from '@mui/material'
 import React, { JSX } from 'react'
 
 import { ActiveTask } from '../engine/model'
+import { useAppState } from '../state'
 
 interface ActiveTaskViewProps {
     task: ActiveTask
@@ -11,19 +12,21 @@ interface ActiveTaskViewProps {
 }
 
 export function ActiveTaskView({ task, onDone, onEdit }: ActiveTaskViewProps): JSX.Element {
+    const appState = useAppState()
+    const age = appState.today.diff(task.date).as('days')
+    const color = age > 5
+        ? 'error'
+        : (
+                age > 1
+                    ? 'warning'
+                    : 'textPrimary'
+            )
+
     return (
         <Paper variant={'outlined'}>
             <Stack p={1}>
-                <Stack direction={'row'} gap={1} justifyContent={'end'}>
-                    <Typography color={'primary'} variant={'body2'}>
-                        {'Active'}
-                    </Typography>
-                </Stack>
-                <Box>
-                    { task.title }
-                </Box>
-                <Stack direction={'row'} gap={1} alignItems={'baseline'}>
-                    <Box>
+                <Stack direction={'row'} gap={1}>
+                    <Box flexGrow={1}>
                         <Typography variant={'body2'} component={'span'} color={'secondary'}>
                             {'Cat.: '}
                         </Typography>
@@ -31,22 +34,27 @@ export function ActiveTaskView({ task, onDone, onEdit }: ActiveTaskViewProps): J
                             {task.category}
                         </Typography>
                     </Box>
-                    <Box flexGrow={1}>
-                        <Typography variant={'body2'} component={'span'} color={'secondary'}>
-                            {'Date: '}
+                    <Box>
+                        <Typography component={'span'} color={'secondary'} variant={'body2'}>
+                            {'Age: '}
                         </Typography>
-                        <Typography variant={'body2'} component={'span'}>
-                            {task.date.toFormat('dd LLL yyyy')}
+                        <Typography component={'span'} color={color} variant={'body2'}>
+                            {age > 1 ? `${age} days` : `${age} day`}
+                        </Typography>
+                    </Box>
+                </Stack>
+                <Box>
+                    { task.title }
+                </Box>
+                <Stack direction={'row'} gap={1} alignItems={'baseline'}>
+                    <Box flexGrow={1}>
+                        <Typography variant={'body2'} color={'secondary'}>
+                            <a onClick={onEdit}>{'Edit'}</a>
                         </Typography>
                     </Box>
                     <Box>
                         <Typography variant={'body2'} color={'primary'}>
                             <a onClick={onDone}>{'Done'}</a>
-                        </Typography>
-                    </Box>
-                    <Box>
-                        <Typography variant={'body2'} color={'secondary'}>
-                            <a onClick={onEdit}>{'Edit'}</a>
                         </Typography>
                     </Box>
                 </Stack>

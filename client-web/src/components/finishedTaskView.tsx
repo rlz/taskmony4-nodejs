@@ -1,4 +1,3 @@
-import { Check as CheckIcon } from '@mui/icons-material'
 import { Box, Paper, Stack, Typography } from '@mui/material'
 import React, { JSX } from 'react'
 
@@ -11,42 +10,34 @@ interface FinishedTaskViewProps {
 }
 
 export function FinishedTaskView({ task, onUndone }: FinishedTaskViewProps): JSX.Element {
+    const daysToFinish = task.finished.diff(task.date).as('days')
+
     return (
         <Paper variant={'outlined'}>
             <Stack p={1}>
                 <Stack direction={'row'} gap={1} justifyContent={'end'}>
-                    <Typography variant={'body2'} color={'success'}>
-                        <CheckIcon fontSize={'small'} />
-                    </Typography>
+                    <Box flexGrow={1}>
+                        <Typography variant={'body2'} component={'span'} color={'secondary'}>
+                            {'Cat.: '}
+                        </Typography>
+                        <Typography variant={'body2'} component={'span'} color={'textSecondary'}>
+                            {task.category}
+                        </Typography>
+                    </Box>
                     <Box>
                         <Typography component={'span'} variant={'body2'} color={'secondary'}>
                             {'Done: '}
                         </Typography>
-                        <Typography variant={'body2'} component={'span'}>
+                        <Typography variant={'body2'} component={'span'} color={'textSecondary'}>
                             {task.finished.toFormat('dd LLL yyyy')}
+                            {` (${daysToFinish === 0 ? 'same day' : (daysToFinish > 1 ? `${daysToFinish} days` : `${daysToFinish} day`)})`}
                         </Typography>
                     </Box>
                 </Stack>
-                <Box>
+                <Typography color={'textSecondary'}>
                     { task.title }
-                </Box>
-                <Stack direction={'row'} gap={1} alignItems={'baseline'}>
-                    <Box>
-                        <Typography variant={'body2'} component={'span'} color={'secondary'}>
-                            {'Cat.: '}
-                        </Typography>
-                        <Typography variant={'body2'} component={'span'}>
-                            {task.category}
-                        </Typography>
-                    </Box>
-                    <Box flexGrow={1}>
-                        <Typography variant={'body2'} component={'span'} color={'secondary'}>
-                            {'Date: '}
-                        </Typography>
-                        <Typography variant={'body2'} component={'span'}>
-                            {task.date.toFormat('dd LLL yyyy')}
-                        </Typography>
-                    </Box>
+                </Typography>
+                <Stack direction={'row'} gap={1} alignItems={'baseline'} justifyContent={'flex-end'}>
                     <Box>
                         <Typography variant={'body2'} color={'primary'}>
                             <a onClick={onUndone}>{'Undone'}</a>

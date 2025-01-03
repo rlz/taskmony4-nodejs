@@ -1,4 +1,5 @@
 import { Box, Paper, Stack, TextField, Typography } from '@mui/material'
+import { DatePicker } from '@mui/x-date-pickers'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 import { JSX } from 'react'
@@ -14,22 +15,24 @@ interface Props {
 }
 
 export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
-    const [taskTitle, setTaskTitle] = useState(task === undefined ? '' : task.title)
+    const [date, setDate] = useState(task === undefined ? utcToday() : task.date)
+    const [title, setTitle] = useState(task === undefined ? '' : task.title)
 
     const save = async () => {
         if (task !== undefined) {
             await onSave({
                 ...task,
                 lastModified: DateTime.utc(),
-                title: taskTitle
+                title,
+                date
             })
         } else {
             await onSave({
                 id: uuidv7(),
                 lastModified: DateTime.utc(),
-                title: taskTitle,
+                title,
                 category: 'test',
-                date: utcToday(),
+                date,
                 finished: null
             })
         }
@@ -38,25 +41,38 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
     return (
         <Paper variant={'outlined'}>
             <Stack p={1} gap={1}>
-                <Typography color={'primary'}>
+                <Typography color={'primary'} variant={'h6'}>
                     {task === undefined ? 'New task' : 'Edit task'}
                 </Typography>
-                <Stack direction={'row'}>
-                    <Box flexGrow={1}>
-                        {'Date: '}
-                        {DateTime.now().toLocaleString()}
-                    </Box>
-                    <Box>
-
-                    </Box>
+                <Stack direction={'row'} gap={1} alignItems={'baseline'}>
+                    <Typography variant={'body2'} color={'secondary'}>
+                        {'Date:'}
+                    </Typography>
+                    <DatePicker
+                        sx={{ mb: 1 }}
+                        format={'dd LLL yyyy'}
+                        value={date}
+                        onAccept={d => setDate(d!)}
+                        timezone={'system'}
+                        slotProps={{
+                            textField: {
+                                size: 'small'
+                            }
+                        }}
+                    />
                 </Stack>
+                {
+                    // showDatePicker && (
+                    //     <Calendar />
+                    // )
+                }
                 <TextField
-                    label={task === undefined ? 'New task' : 'Edit task'}
+                    label={'Title'}
                     size={'small'}
                     fullWidth
                     autoFocus
-                    value={taskTitle}
-                    onChange={e => setTaskTitle(e.target.value)}
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
                     onKeyUp={async (e) => {
                         if (e.key === 'Enter') {
                             await save()

@@ -27,6 +27,7 @@ export const MainScreen = observer(function MainScreen(): JSX.Element {
                         return i.id === editTask
                             ? (
                                     <TaskEditor
+                                        key={i.id}
                                         task={i}
                                         onSave={(t) => {
                                             engine.pushTask(t)

@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite'
 import React, { ComponentType, PropsWithChildren } from 'react'
 import { JSX } from 'react'
 import { Navigate } from 'react-router-dom'
+import { apiLogout } from 'rlz-engine/dist/client/api/auth'
 import { useAuthState } from 'rlz-engine/dist/client/state/auth'
 
 const TITLE_STYLE: SxProps = {
@@ -37,7 +38,12 @@ export const BaseScreen = observer(function BaseScreen({ children, fabIcon, onFa
                 <Toolbar>
                     <Typography variant={'h6'} sx={TITLE_STYLE}>{'Taskmony'}</Typography>
                     <Button
-                        onClick={() => {
+                        onClick={async () => {
+                            if (authState.authParam === null) {
+                                throw Error('Not logged in')
+                            }
+
+                            await apiLogout(authState.authParam)
                             authState.logout()
                         }}
                         color={'inherit'}

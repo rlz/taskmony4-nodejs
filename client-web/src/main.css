@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+}
+
+a {
+    cursor: pointer;
+}
+
+table {
+    border-spacing: 0;
+}
+
+th {
+    font-weight: normal;
+    text-align: left;
+    padding: 0;
+}
+
+td {
+    padding: 0;
+}
+
+pre {
+    margin: 0;
+}

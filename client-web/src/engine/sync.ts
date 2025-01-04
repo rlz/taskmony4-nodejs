@@ -6,10 +6,11 @@ import { toValid } from 'rlz-engine/dist/shared/utils/datetime'
 
 import { ApiTaskV0 } from '../../../common/tasks'
 import { apiPushTasks, apiTasks, apiTasksByIds } from '../api'
+import { AppState } from '../state'
 import { Engine } from './engine'
 import { Task } from './model'
 
-export async function syncTasks(authState: AuthState, engine: Engine, lastSyncDate: DateTime<true> | null) {
+export async function syncTasks(appState: AppState, authState: AuthState, engine: Engine) {
     const authParam = authState.authParam
 
     if (authParam === null) {
@@ -18,7 +19,7 @@ export async function syncTasks(authState: AuthState, engine: Engine, lastSyncDa
 
     try {
         await syncItems({
-            getRemoteLastModified: () => apiTasks(authParam, lastSyncDate),
+            getRemoteLastModified: () => apiTasks(authParam, appState.lastSyncDate),
             localItems: [...engine.activeTasks, ...engine.finishedTasks],
             pushRemote: (items: readonly Task[]) => apiPushTasks(
                 items.map((i): ApiTaskV0 => {
@@ -46,8 +47,9 @@ export async function syncTasks(authState: AuthState, engine: Engine, lastSyncDa
                     }
                 }),
             pushLocal: (items: readonly Task[]) => items.forEach(i => engine.pushTask(i)),
-            lastSyncDate
+            lastSyncDate: appState.lastSyncDate
         })
+        appState.synced()
     } catch (e) {
         if (e instanceof Forbidden) {
             authState.logout()

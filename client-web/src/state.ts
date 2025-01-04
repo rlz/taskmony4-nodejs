@@ -1,9 +1,23 @@
-import { makeAutoObservable } from 'mobx'
+import { DateTime } from 'luxon'
+import { autorun, makeAutoObservable } from 'mobx'
 import { createContext, useContext } from 'react'
-import { utcToday } from 'rlz-engine/dist/shared/utils/datetime'
+import { toValid, utcToday } from 'rlz-engine/dist/shared/utils/datetime'
+
+const LAST_SYNC_DATE_KEY = 'lastSyncDate'
 
 export class AppState {
     today = utcToday()
+    lastSyncDate: DateTime<true> | null = (() => {
+        const dateStr = localStorage.getItem(LAST_SYNC_DATE_KEY)
+        if (dateStr === null) {
+            return null
+        }
+        try {
+            return toValid(DateTime.fromISO(dateStr, { zone: 'utc' }))
+        } catch {
+            return null
+        }
+    })()
 
     constructor() {
         makeAutoObservable(this)
@@ -15,6 +29,22 @@ export class AppState {
                 this.today = today
             }
         }, 10 * 1000) // Update every 10 seconds
+
+        autorun(() => {
+            if (this.lastSyncDate === null) {
+                localStorage.removeItem(LAST_SYNC_DATE_KEY)
+            } else {
+                localStorage.setItem(LAST_SYNC_DATE_KEY, this.lastSyncDate.toISO())
+            }
+        })
+    }
+
+    synced() {
+        this.lastSyncDate = DateTime.utc()
+    }
+
+    clearLastSyncDate() {
+        this.lastSyncDate = null
     }
 }
 

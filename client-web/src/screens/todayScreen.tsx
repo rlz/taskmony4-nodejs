@@ -1,5 +1,6 @@
 import { Add as AddIcon } from '@mui/icons-material'
 import { Stack, Typography } from '@mui/material'
+import { DateTime } from 'luxon'
 import { observer } from 'mobx-react-lite'
 import React, { JSX, useState } from 'react'
 
@@ -45,7 +46,7 @@ export const TodayScreen = observer(function TodayScreen(): JSX.Element {
                                     <ActiveTaskView
                                         key={i.id}
                                         task={i}
-                                        onDone={() => engine.pushTask({ ...i, finished: appState.today })}
+                                        onDone={() => engine.pushTask({ ...i, finished: appState.today, lastModified: DateTime.utc() })}
                                         onEdit={() => setEditTask(i.id)}
                                     />
                                 )
@@ -74,7 +75,7 @@ export const TodayScreen = observer(function TodayScreen(): JSX.Element {
                                         <FinishedTaskView
                                             key={i.id}
                                             task={i}
-                                            onUndone={() => engine.pushTask({ ...i, finished: null })}
+                                            onUndone={() => engine.pushTask({ ...i, finished: null, lastModified: DateTime.utc() })}
                                         />
                                     )
                                 })

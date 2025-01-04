@@ -79,9 +79,16 @@ function App() {
 
             autorun(async () => {
                 if (authState.authParam !== null) {
-                    await syncTasks(authState, engine, null)
+                    void engine.activeTasks
+                    void engine.finishedTasks
+                    setTimeout(async () => {
+                        await syncTasks(appState, authState, engine)
+                    }, 0)
                 } else {
-                    engine.clearData()
+                    setTimeout(() => {
+                        engine.clearData()
+                        appState.clearLastSyncDate()
+                    }, 0)
                 }
             })
         })()

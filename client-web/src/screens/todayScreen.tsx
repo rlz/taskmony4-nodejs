@@ -16,12 +16,17 @@ export const TodayScreen = observer(function TodayScreen(): JSX.Element {
     const engine = useEngine()
     const [editTask, setEditTask] = useState<string | null | undefined>(undefined)
 
+    const todayFinishedTasks = engine.finishedTasks.filter(i => i.finished.toMillis() === appState.today.toMillis())
+
     return (
         <BaseScreen
             fabIcon={editTask === undefined ? AddIcon : undefined}
             onFabClick={() => setEditTask(null)}
         >
             <Stack p={1} gap={1}>
+                <Typography variant={'h6'} color={'primary'}>
+                    {'Todo'}
+                </Typography>
                 {
                     engine.activeTasks.filter(i => i.date <= appState.today).map((i) => {
                         return i.id === editTask
@@ -57,20 +62,27 @@ export const TodayScreen = observer(function TodayScreen(): JSX.Element {
                         />
                     )
                 }
-                <Typography variant={'h6'} color={'primary'}>
-                    {'Done Today'}
-                </Typography>
                 {
-                    engine.finishedTasks.filter(i => i.finished.toMillis() === appState.today.toMillis()).map((i) => {
-                        return (
-                            <FinishedTaskView
-                                key={i.id}
-                                task={i}
-                                onUndone={() => engine.pushTask({ ...i, finished: null })}
-                            />
-                        )
-                    })
+                    todayFinishedTasks.length > 0 && (
+                        <>
+                            <Typography variant={'h6'} color={'primary'}>
+                                {'Done Today'}
+                            </Typography>
+                            {
+                                todayFinishedTasks.map((i) => {
+                                    return (
+                                        <FinishedTaskView
+                                            key={i.id}
+                                            task={i}
+                                            onUndone={() => engine.pushTask({ ...i, finished: null })}
+                                        />
+                                    )
+                                })
+                            }
+                        </>
+                    )
                 }
+
             </Stack>
         </BaseScreen>
     )

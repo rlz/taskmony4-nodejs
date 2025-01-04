@@ -59,7 +59,7 @@
         "react-dom": "^19.0.0",
         "react-resize-detector": "^12.0.1",
         "react-transition-group": "^4.4.5",
-        "rlz-engine": "^0.0.1",
+        "rlz-engine": "^0.0.2",
         "uuidv7": "^1.0.2",
         "zod": "^3.22.4",
         "zod-to-json-schema": "^3.23.0"

@@ -3,9 +3,11 @@ import { DatePicker } from '@mui/x-date-pickers'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 import { JSX } from 'react'
+import { ItemsSelect } from 'rlz-engine/dist/client/widgets/ItemsSelect'
 import { utcToday } from 'rlz-engine/dist/shared/utils/datetime'
 import { uuidv7 } from 'uuidv7'
 
+import { useEngine } from '../engine/engine'
 import { Task } from '../engine/model'
 
 interface Props {
@@ -15,8 +17,11 @@ interface Props {
 }
 
 export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
+    const engine = useEngine()
+
     const [date, setDate] = useState(task === undefined ? utcToday() : task.date)
     const [title, setTitle] = useState(task === undefined ? '' : task.title)
+    const [category, setCategory] = useState(task === undefined ? engine.mostPopularCat : task.category)
 
     const save = async () => {
         if (task !== undefined) {
@@ -24,14 +29,15 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
                 ...task,
                 lastModified: DateTime.utc(),
                 title,
-                date
+                date,
+                category
             })
         } else {
             await onSave({
                 id: uuidv7(),
                 lastModified: DateTime.utc(),
                 title,
-                category: 'test',
+                category,
                 date,
                 finished: null
             })
@@ -41,7 +47,7 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
     return (
         <Paper variant={'outlined'}>
             <Stack p={1} gap={1}>
-                <Typography color={'primary'} variant={'h6'}>
+                <Typography color={'primary'} variant={'h5'}>
                     {task === undefined ? 'New task' : 'Edit task'}
                 </Typography>
                 <Stack direction={'row'} gap={1} alignItems={'baseline'}>
@@ -73,6 +79,31 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
                     autoFocus
                     value={title}
                     onChange={e => setTitle(e.target.value)}
+                    onKeyUp={async (e) => {
+                        if (e.key === 'Enter') {
+                            await save()
+                        }
+                    }}
+                />
+                <Typography color={'secondary'} variant={'h6'}>
+                    {'Category'}
+                </Typography>
+                <ItemsSelect
+                    items={engine.categories.map(c => ({
+                        value: c,
+                        label: c
+                    }))}
+                    selected={[category]}
+                    selectMany={false}
+                    selectZero={false}
+                    onSelectedChange={selected => setCategory(selected[0])}
+                />
+                <TextField
+                    label={'Category'}
+                    size={'small'}
+                    fullWidth
+                    value={category}
+                    onChange={e => setCategory(e.target.value)}
                     onKeyUp={async (e) => {
                         if (e.key === 'Enter') {
                             await save()

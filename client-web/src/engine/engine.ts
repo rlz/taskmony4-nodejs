@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from 'mobx'
+import { action, computed, makeObservable, observable } from 'mobx'
 import { createContext, useContext } from 'react'
 
 import { ActiveTask, FinishedTask, Task } from './model'
@@ -24,7 +24,9 @@ export class Engine {
                 finishedTasks: observable.shallow,
                 activeTasks: observable.shallow,
                 pushTask: action,
-                clearData: action
+                clearData: action,
+                mostPopularCat: computed,
+                categories: computed
             }
         )
     }
@@ -64,6 +66,46 @@ export class Engine {
         if (!this.initialised) {
             throw Error('Uninitialized engine')
         }
+    }
+
+    get mostPopularCat(): string {
+        this.requireInitialized()
+
+        const categories = this.countCategories
+
+        let maxCount = 0
+        let maxCategory = ''
+
+        Object.entries(categories).forEach(([category, count]) => {
+            if (count > maxCount) {
+                maxCount = count
+                maxCategory = category
+            }
+        })
+
+        return maxCategory
+    }
+
+    get categories(): readonly string[] {
+        this.requireInitialized()
+
+        return Object.entries(this.countCategories).sort((a, b) => b[1] - a[1]).map(i => i[0])
+    }
+
+    private get countCategories(): Record<string, number> {
+        this.requireInitialized()
+
+        const categories: Record<string, number> = {}
+
+        this.activeTasks.forEach((i) => {
+            categories[i.category] = (categories[i.category] ?? 0) + 1
+        })
+
+        this.finishedTasks.forEach((i) => {
+            categories[i.category] = (categories[i.category] ?? 0) + 1
+        })
+
+        return categories
     }
 }
 

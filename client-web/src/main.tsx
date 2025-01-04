@@ -24,6 +24,10 @@ import { AppState, AppStateContext } from './state'
 
 installIntoGlobal()
 
+function LoginScreen() {
+    return <SignupSigninScreen appName={'Taskmony'} />
+}
+
 const ROUTER = createBrowserRouter([
     {
         path: '/',
@@ -31,11 +35,11 @@ const ROUTER = createBrowserRouter([
     },
     {
         path: '/signin',
-        element: <SignupSigninScreen appName={'Taskmony'} />
+        Component: LoginScreen
     },
     {
         path: '/signup',
-        element: <SignupSigninScreen appName={'Taskmony'} />
+        Component: LoginScreen
     },
     {
         path: '*',

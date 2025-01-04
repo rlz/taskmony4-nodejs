@@ -1,0 +1,14 @@
+[Unit]
+Description=Personal task tracker
+After=network.target
+After=mongod.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/taskmony
+Restart=on-failure
+ExecStart=/usr/bin/node /taskmony/dist/main.js
+
+[Install]
+WantedBy=multi-user.target

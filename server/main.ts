@@ -1,5 +1,6 @@
 import { AUTH_API } from 'rlz-engine/dist/back/auth/controllers'
 import { AuthStorage } from 'rlz-engine/dist/back/auth/storage'
+import { logger } from 'rlz-engine/dist/back/logger'
 import { runServer } from 'rlz-engine/dist/back/server'
 import { MongoStorage } from 'rlz-engine/dist/back/storage/db'
 
@@ -10,7 +11,11 @@ const PRODUCTION = process.env.NODE_ENV === 'production'
 const DOMAIN = 'app.taskmony.ru'
 const CERT_DIR = './cert'
 
-void runServer({
+const L = logger('init')
+
+L.info('About to run server')
+
+runServer({
     production: PRODUCTION,
     domain: DOMAIN,
     certDir: CERT_DIR,
@@ -28,3 +33,9 @@ void runServer({
         server.register(TASKS_API, { storage: tasksStorage, auth: authStorage.auth })
     }
 })
+    .catch((e) => {
+        L.error('Error run server', { error: e })
+    })
+    .finally(() => {
+        L.info('Runned')
+    })

@@ -5,7 +5,7 @@
     "scripts": {
         "start": "tsx server/main.ts",
         "start-server": "tsx server/main.ts",
-        "build-server": "esbuild server/main.ts --bundle --keep-names --minify --platform=node --format=cjs --outfile=follower.cjs",
+        "build-server": "node build.js",
         "start-client": "vite",
         "build-client": "vite build",
         "test": "jest",
@@ -24,6 +24,7 @@
         "@typescript-eslint/parser": "^8.3.0",
         "@vitejs/plugin-react": "^4.2.1",
         "esbuild": "^0.24.2",
+        "esbuild-plugin-pino": "^2.2.1",
         "eslint": "^9.9.1",
         "eslint-plugin-simple-import-sort": "^12.0.0",
         "tsx": "^4.7.1",
@@ -59,7 +60,7 @@
         "react-dom": "^19.0.0",
         "react-resize-detector": "^12.0.1",
         "react-transition-group": "^4.4.5",
-        "rlz-engine": "^0.0.5",
+        "rlz-engine": "^0.0.9",
         "uuidv7": "^1.0.2",
         "zod": "^3.22.4",
         "zod-to-json-schema": "^3.23.0"

@@ -1,4 +1,5 @@
-import { Box, Paper, Stack, Typography } from '@mui/material'
+import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon } from '@mui/icons-material'
+import { Box, Paper, Stack, useTheme } from '@mui/material'
 import React, { JSX } from 'react'
 
 import { ActiveTask } from '../engine/model'
@@ -11,71 +12,57 @@ interface ActiveTaskViewProps {
     onDone: () => Promise<void> | void
 }
 
+const CHECK_STYLE = { lineHeight: 0 }
+
 export function ActiveTaskView({ task, onDone, onEdit }: ActiveTaskViewProps): JSX.Element {
     const appState = useAppState()
+    const theme = useTheme()
+
     const age = appState.today.diff(task.date).as('days')
-    const color = age > 5
-        ? 'error'
-        : (
-                age > 1
-                    ? 'warning'
-                    : 'textPrimary'
-            )
 
     return (
         <Paper variant={'outlined'}>
-            <Stack p={1}>
-                <Stack direction={'row'} gap={1}>
-                    <Box flexGrow={1}>
-                        <Typography variant={'body2'} component={'span'} color={'secondary'}>
-                            {'Cat.: '}
-                        </Typography>
-                        <Typography variant={'body2'} component={'span'}>
-                            {task.category}
-                        </Typography>
+            <a onClick={onEdit}>
+                <Stack direction={'row'} justifyContent={'flex-end'} gap={1}>
+                    <Box
+                        bgcolor={theme.palette.mode === 'dark' ? theme.palette.secondary.dark : theme.palette.secondary.light}
+                        fontSize={'0.8rem'}
+                        px={1}
+                        borderRadius={'0 0px 4px 4px'}
+                    >
+                        {task.category}
                     </Box>
-                    <Box>
+                    <Box
+                        bgcolor={theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light}
+                        fontSize={'0.8rem'}
+                        mr={2}
+                        px={1}
+                        borderRadius={'0 0px 4px 4px'}
+                    >
                         {
                             age >= 0
                                 ? (
-                                        <>
-                                            <Typography component={'span'} color={'secondary'} variant={'body2'}>
-                                                {'Age: '}
-                                            </Typography>
-                                            <Typography component={'span'} color={color} variant={'body2'}>
-                                                {age > 1 ? `${age} days` : `${age} day`}
-                                            </Typography>
-                                        </>
+                                        age > 1 || age === 0 ? `${age} days` : `${age} day`
                                     )
                                 : (
-                                        <>
-                                            <Typography component={'span'} color={'secondary'} variant={'body2'}>
-                                                {'Date: '}
-                                            </Typography>
-                                            <Typography component={'span'} variant={'body2'}>
-                                                {task.date.toFormat('dd LLL yyyy')}
-                                            </Typography>
-                                        </>
+                                        task.date.toFormat('dd LLL yyyy')
                                     )
                         }
                     </Box>
                 </Stack>
-                <Box>
-                    { task.title }
-                </Box>
-                <Stack direction={'row'} gap={1} alignItems={'baseline'}>
-                    <Box flexGrow={1}>
-                        <Typography variant={'body2'} color={'secondary'}>
-                            <a onClick={onEdit}>{'Edit'}</a>
-                        </Typography>
-                    </Box>
-                    <Box>
-                        <Typography variant={'body2'} color={'primary'}>
-                            <a onClick={onDone}>{'Done'}</a>
-                        </Typography>
-                    </Box>
+                <Stack direction={'row'} gap={1} p={1} alignItems={'center'}>
+                    <a
+                        style={CHECK_STYLE}
+                        onClick={async (e) => {
+                            e.stopPropagation()
+                            await onDone()
+                        }}
+                    >
+                        <CheckBoxOutlineBlankIcon />
+                    </a>
+                    <Box>{ task.title }</Box>
                 </Stack>
-            </Stack>
+            </a>
         </Paper>
 
     )

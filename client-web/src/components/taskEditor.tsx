@@ -1,9 +1,8 @@
-import { Box, Paper, Stack, TextField, Typography } from '@mui/material'
+import { Button, Chip, Paper, Stack, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 import { JSX } from 'react'
-import { ItemsSelect } from 'rlz-engine/dist/client/widgets/ItemsSelect'
 import { utcToday } from 'rlz-engine/dist/shared/utils/datetime'
 import { uuidv7 } from 'uuidv7'
 
@@ -46,32 +45,26 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
 
     return (
         <Paper variant={'outlined'}>
-            <Stack p={1} gap={1}>
-                <Typography color={'primary'} variant={'h5'}>
-                    {task === undefined ? 'New task' : 'Edit task'}
-                </Typography>
-                <Stack direction={'row'} gap={1} alignItems={'baseline'}>
-                    <Typography variant={'body2'} color={'secondary'}>
-                        {'Date:'}
+            <Stack p={1} gap={2}>
+                <Stack direction={'row'} gap={1} alignItems={'center'}>
+                    <Typography color={'primary'} variant={'h5'} flexGrow={1}>
+                        {task === undefined ? 'New task' : 'Edit task'}
                     </Typography>
-                    <DatePicker
-                        sx={{ mb: 1 }}
-                        format={'dd LLL yyyy'}
-                        value={date}
-                        onAccept={d => setDate(d!)}
-                        timezone={'system'}
-                        slotProps={{
-                            textField: {
-                                size: 'small'
-                            }
-                        }}
-                    />
+                    <Button size={'small'} onClick={onCancel}>{'Cancel'}</Button>
+                    <Button variant={'contained'} size={'small'} onClick={save}>{'Save'}</Button>
                 </Stack>
-                {
-                    // showDatePicker && (
-                    //     <Calendar />
-                    // )
-                }
+                <DatePicker
+                    label={'Start date'}
+                    format={'dd LLL yyyy'}
+                    value={date}
+                    onAccept={d => setDate(d!)}
+                    timezone={'system'}
+                    slotProps={{
+                        textField: {
+                            size: 'small'
+                        }
+                    }}
+                />
                 <TextField
                     label={'Title'}
                     size={'small'}
@@ -85,19 +78,6 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
                         }
                     }}
                 />
-                <Typography color={'secondary'} variant={'h6'}>
-                    {'Category'}
-                </Typography>
-                <ItemsSelect
-                    items={engine.categories.map(c => ({
-                        value: c,
-                        label: c
-                    }))}
-                    selected={[category]}
-                    selectMany={false}
-                    selectZero={false}
-                    onSelectedChange={selected => setCategory(selected[0])}
-                />
                 <TextField
                     label={'Category'}
                     size={'small'}
@@ -110,17 +90,21 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
                         }
                     }}
                 />
-                <Stack direction={'row'} gap={1}>
-                    <Box flexGrow={1}>
-                        <Typography variant={'body2'} color={'secondary'}>
-                            <a onClick={onCancel}>{'Cancel'}</a>
-                        </Typography>
-                    </Box>
-                    <Box>
-                        <Typography variant={'body2'} color={'primary'}>
-                            <a onClick={save}>{'Save'}</a>
-                        </Typography>
-                    </Box>
+                <Stack direction={'row'} gap={1} flexWrap={'wrap'} pb={1}>
+                    {
+                        engine.categories.map((c) => {
+                            return (
+                                <Chip
+                                    key={c}
+                                    label={c}
+                                    size={'small'}
+                                    variant={c === category ? 'filled' : 'outlined'}
+                                    color={'primary'}
+                                    onClick={() => setCategory(c)}
+                                />
+                            )
+                        })
+                    }
                 </Stack>
             </Stack>
         </Paper>

@@ -74,7 +74,7 @@ export class Engine {
         const categories = this.countCategories
 
         let maxCount = 0
-        let maxCategory = ''
+        let maxCategory = 'default'
 
         Object.entries(categories).forEach(([category, count]) => {
             if (count > maxCount) {

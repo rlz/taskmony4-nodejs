@@ -5,13 +5,12 @@ import React, { JSX, useState } from 'react'
 
 import { ActiveTaskView } from '../components/activeTaskView'
 import { BaseScreen } from '../components/baseScreen'
-import { FinishedTaskView } from '../components/finishedTaskView'
 import { TaskEditor } from '../components/taskEditor'
 import { useEngine } from '../engine/engine'
 import { useAppState } from '../state'
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const MainScreen = observer(function MainScreen(): JSX.Element {
+export const PlannedScreen = observer(function PlannedScreen(): JSX.Element {
     const appState = useAppState()
     const engine = useEngine()
     const [editTask, setEditTask] = useState<string | null | undefined>(undefined)
@@ -23,7 +22,7 @@ export const MainScreen = observer(function MainScreen(): JSX.Element {
         >
             <Stack p={1} gap={1}>
                 {
-                    engine.activeTasks.filter(i => i.date <= appState.today).map((i) => {
+                    engine.activeTasks.map((i) => {
                         return i.id === editTask
                             ? (
                                     <TaskEditor
@@ -56,17 +55,6 @@ export const MainScreen = observer(function MainScreen(): JSX.Element {
                             onCancel={() => setEditTask(undefined)}
                         />
                     )
-                }
-                {
-                    engine.finishedTasks.filter(i => i.finished.toMillis() === appState.today.toMillis()).map((i) => {
-                        return (
-                            <FinishedTaskView
-                                key={i.id}
-                                task={i}
-                                onUndone={() => engine.pushTask({ ...i, finished: null })}
-                            />
-                        )
-                    })
                 }
             </Stack>
         </BaseScreen>

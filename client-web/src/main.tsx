@@ -19,7 +19,9 @@ import { useAuthState } from 'rlz-engine/dist/client/state/auth'
 import { Engine, EngineContext } from './engine/engine'
 import { syncTasks } from './engine/sync'
 import { LocalStorage } from './localstorage/storage'
-import { MainScreen } from './screens/main'
+import { FinishedScreen } from './screens/finishedScreen'
+import { PlannedScreen } from './screens/plannedScreen'
+import { TodayScreen } from './screens/todayScreen'
 import { AppState, AppStateContext } from './state'
 
 installIntoGlobal()
@@ -31,7 +33,15 @@ function LoginScreen() {
 const ROUTER = createBrowserRouter([
     {
         path: '/',
-        Component: MainScreen
+        Component: TodayScreen
+    },
+    {
+        path: '/planned',
+        Component: PlannedScreen
+    },
+    {
+        path: '/finished',
+        Component: FinishedScreen
     },
     {
         path: '/signin',

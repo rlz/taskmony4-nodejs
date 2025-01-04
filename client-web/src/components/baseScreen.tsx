@@ -1,8 +1,9 @@
-import { AppBar, Box, Button, Fab, Stack, SxProps, Toolbar, Typography, useTheme } from '@mui/material'
+import { ChecklistRtl as ChecklistRtlIcon, PendingActions as PendingActionsIcon, Today as TodayIcon } from '@mui/icons-material'
+import { AppBar, BottomNavigation, BottomNavigationAction, Box, Button, Fab, Stack, SxProps, Toolbar, Typography, useTheme } from '@mui/material'
 import { observer } from 'mobx-react-lite'
 import React, { ComponentType, PropsWithChildren } from 'react'
 import { JSX } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { apiLogout } from 'rlz-engine/dist/client/api/auth'
 import { useAuthState } from 'rlz-engine/dist/client/state/auth'
 
@@ -13,7 +14,7 @@ const TITLE_STYLE: SxProps = {
 const FAB_STYLE: SxProps = {
     position: 'fixed',
     right: 16,
-    bottom: 16
+    bottom: 72
 }
 
 interface BaseScreenProps {
@@ -25,6 +26,8 @@ interface BaseScreenProps {
 export const BaseScreen = observer(function BaseScreen({ children, fabIcon, onFabClick }: PropsWithChildren<BaseScreenProps>): JSX.Element {
     const authState = useAuthState()
     const theme = useTheme()
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const FabIcon = fabIcon
 
@@ -70,6 +73,17 @@ export const BaseScreen = observer(function BaseScreen({ children, fabIcon, onFa
                     )
                 }
             </Box>
+            <BottomNavigation
+                showLabels
+                value={location.pathname}
+                onChange={async (_, newValue) => {
+                    await navigate(newValue)
+                }}
+            >
+                <BottomNavigationAction value={'/'} label={'Today'} icon={<TodayIcon />} />
+                <BottomNavigationAction value={'/planned'} label={'Planned'} icon={<PendingActionsIcon />} />
+                <BottomNavigationAction value={'/finished'} label={'Finished'} icon={<ChecklistRtlIcon />} />
+            </BottomNavigation>
         </Stack>
     )
 })

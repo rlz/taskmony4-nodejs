@@ -35,12 +35,29 @@ export function ActiveTaskView({ task, onDone, onEdit }: ActiveTaskViewProps): J
                         </Typography>
                     </Box>
                     <Box>
-                        <Typography component={'span'} color={'secondary'} variant={'body2'}>
-                            {'Age: '}
-                        </Typography>
-                        <Typography component={'span'} color={color} variant={'body2'}>
-                            {age > 1 ? `${age} days` : `${age} day`}
-                        </Typography>
+                        {
+                            age >= 0
+                                ? (
+                                        <>
+                                            <Typography component={'span'} color={'secondary'} variant={'body2'}>
+                                                {'Age: '}
+                                            </Typography>
+                                            <Typography component={'span'} color={color} variant={'body2'}>
+                                                {age > 1 ? `${age} days` : `${age} day`}
+                                            </Typography>
+                                        </>
+                                    )
+                                : (
+                                        <>
+                                            <Typography component={'span'} color={'secondary'} variant={'body2'}>
+                                                {'Date: '}
+                                            </Typography>
+                                            <Typography component={'span'} variant={'body2'}>
+                                                {task.date.toFormat('dd LLL yyyy')}
+                                            </Typography>
+                                        </>
+                                    )
+                        }
                     </Box>
                 </Stack>
                 <Box>

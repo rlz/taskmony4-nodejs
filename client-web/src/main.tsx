@@ -42,7 +42,11 @@ const ROUTER = createBrowserRouter([
     },
     {
         path: '/tasks',
-        element: <Navigate to={'/tasks/today'} />
+        element: (
+            <BaseScreen>
+                <Navigate to={'/tasks/today'} />
+            </BaseScreen>
+        )
     },
     {
         path: '/tasks/today',

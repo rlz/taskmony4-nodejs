@@ -115,11 +115,11 @@ function finishedTasksCompare(i1: Task, i2: Task): number {
     }
 
     if (i1.finished < i2.finished) {
-        return -1
+        return 1
     }
 
     if (i1.finished > i2.finished) {
-        return 1
+        return -1
     }
 
     return 0

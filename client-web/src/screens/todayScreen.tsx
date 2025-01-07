@@ -83,7 +83,6 @@ export const TodayScreen = observer(function TodayScreen(): JSX.Element {
                         </>
                     )
                 }
-
             </Stack>
         </BaseScreen>
     )

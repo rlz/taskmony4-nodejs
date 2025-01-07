@@ -1,4 +1,4 @@
-import { Button, Chip, Paper, Stack, TextField, Typography } from '@mui/material'
+import { Button, Paper, Stack, TextField, Typography, useTheme } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
@@ -17,10 +17,13 @@ interface Props {
 
 export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
     const engine = useEngine()
+    const theme = useTheme()
 
     const [date, setDate] = useState(task === undefined ? utcToday() : task.date)
     const [title, setTitle] = useState(task === undefined ? '' : task.title)
     const [category, setCategory] = useState(task === undefined ? engine.mostPopularCat : task.category)
+
+    const catPalette = engine.palette
 
     const save = async () => {
         if (task !== undefined) {
@@ -94,14 +97,29 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
                     {
                         engine.categories.map((c) => {
                             return (
-                                <Chip
+                                <a
                                     key={c}
-                                    label={c}
-                                    size={'small'}
-                                    variant={c === category ? 'filled' : 'outlined'}
-                                    color={'primary'}
+                                    style={
+                                        {
+                                            borderRadius: '1000px',
+                                            paddingLeft: '12px',
+                                            paddingRight: '12px',
+                                            paddingTop: '2px',
+                                            paddingBottom: '2px',
+                                            borderStyle: 'solid',
+                                            borderWidth: '1px',
+                                            borderColor: catPalette[c],
+                                            ...(c === category && {
+                                                backgroundColor: catPalette[c],
+                                                color: theme.palette.getContrastText(catPalette[c])
+                                            }
+                                            )
+                                        }
+                                    }
                                     onClick={() => setCategory(c)}
-                                />
+                                >
+                                    {c}
+                                </a>
                             )
                         })
                     }

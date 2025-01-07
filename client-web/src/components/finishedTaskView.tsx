@@ -2,6 +2,7 @@ import { CheckBoxOutlined } from '@mui/icons-material'
 import { Box, Paper, Stack, Typography, useTheme } from '@mui/material'
 import React, { JSX } from 'react'
 
+import { useEngine } from '../engine/engine'
 import { FinishedTask } from '../engine/model'
 
 interface FinishedTaskViewProps {
@@ -13,16 +14,20 @@ interface FinishedTaskViewProps {
 const CHECK_STYLE = { lineHeight: 0 }
 
 export function FinishedTaskView({ task, onUndone }: FinishedTaskViewProps): JSX.Element {
+    const engine = useEngine()
     const theme = useTheme()
+
+    const color = engine.palette[task.category]
 
     return (
         <Paper variant={'outlined'}>
             <Stack direction={'row'} justifyContent={'flex-end'} gap={1}>
                 <Box
-                    bgcolor={theme.palette.mode === 'dark' ? theme.palette.secondary.dark : theme.palette.secondary.light}
+                    bgcolor={color}
                     fontSize={'0.8rem'}
                     px={1}
                     borderRadius={'0 0px 4px 4px'}
+                    color={theme.palette.getContrastText(color)}
                 >
                     {task.category}
                 </Box>

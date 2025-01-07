@@ -1,6 +1,7 @@
 import { action, computed, makeObservable, observable } from 'mobx'
 import { createContext, useContext } from 'react'
 
+import { paletteGenerator } from '../utils/colors'
 import { ActiveTask, FinishedTask, Task } from './model'
 
 export interface EngineDataChangeListener {
@@ -26,7 +27,8 @@ export class Engine {
                 pushTask: action,
                 clearData: action,
                 mostPopularCat: computed,
-                categories: computed
+                categories: computed,
+                palette: computed
             }
         )
     }
@@ -106,6 +108,11 @@ export class Engine {
         })
 
         return categories
+    }
+
+    get palette(): Record<string, string> {
+        const p = paletteGenerator()
+        return Object.fromEntries(this.categories.values().zip(p))
     }
 }
 

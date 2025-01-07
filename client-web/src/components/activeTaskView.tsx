@@ -1,7 +1,8 @@
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon } from '@mui/icons-material'
-import { Box, Paper, Stack, useTheme } from '@mui/material'
+import { Box, Paper, Stack, Typography, useTheme } from '@mui/material'
 import React, { JSX } from 'react'
 
+import { useEngine } from '../engine/engine'
 import { ActiveTask } from '../engine/model'
 import { useAppState } from '../state'
 
@@ -16,22 +17,25 @@ const CHECK_STYLE = { lineHeight: 0 }
 
 export function ActiveTaskView({ task, onDone, onEdit }: ActiveTaskViewProps): JSX.Element {
     const appState = useAppState()
+    const engine = useEngine()
     const theme = useTheme()
 
     const age = appState.today.diff(task.date).as('days')
+    const color = engine.palette[task.category]
 
     return (
         <Paper variant={'outlined'}>
             <a onClick={onEdit}>
                 <Stack direction={'row'} justifyContent={'flex-end'} gap={1}>
-                    <Box
-                        bgcolor={theme.palette.mode === 'dark' ? theme.palette.secondary.dark : theme.palette.secondary.light}
+                    <Typography
+                        bgcolor={color}
                         fontSize={'0.8rem'}
                         px={1}
                         borderRadius={'0 0px 4px 4px'}
+                        color={theme.palette.getContrastText(color)}
                     >
                         {task.category}
-                    </Box>
+                    </Typography>
                     <Box
                         bgcolor={theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light}
                         fontSize={'0.8rem'}

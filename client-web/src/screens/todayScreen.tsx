@@ -5,7 +5,6 @@ import { observer } from 'mobx-react-lite'
 import React, { JSX, useState } from 'react'
 
 import { ActiveTaskView } from '../components/activeTaskView'
-import { BaseScreen } from '../components/baseScreen'
 import { SimpleFab } from '../components/fab'
 import { FinishedTaskView } from '../components/finishedTaskView'
 import { TaskEditor } from '../components/taskEditor'
@@ -13,7 +12,7 @@ import { useEngine } from '../engine/engine'
 import { useAppState } from '../state'
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const TodayScreen = observer(function TodayScreen(): JSX.Element {
+export const TodayScreenBody = observer(function TodayScreenBody(): JSX.Element {
     const appState = useAppState()
     const engine = useEngine()
     const [editTask, setEditTask] = useState<string | null | undefined>(undefined)
@@ -21,7 +20,7 @@ export const TodayScreen = observer(function TodayScreen(): JSX.Element {
     const todayFinishedTasks = engine.finishedTasks.filter(i => i.finished.toMillis() === appState.today.toMillis())
 
     return (
-        <BaseScreen>
+        <>
             <Stack p={1} gap={1}>
                 <Typography variant={'h6'} color={'primary'}>
                     {'Todo'}
@@ -91,6 +90,6 @@ export const TodayScreen = observer(function TodayScreen(): JSX.Element {
                     />
                 )
             }
-        </BaseScreen>
+        </>
     )
 })

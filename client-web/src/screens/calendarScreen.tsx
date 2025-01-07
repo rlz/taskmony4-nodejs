@@ -3,12 +3,11 @@ import { DateTime } from 'luxon'
 import { JSX } from 'react'
 import React from 'react'
 
-import { BaseScreen } from '../components/baseScreen'
 import { dateType, DAY_TYPE } from '../utils/calendar'
 
 const YEARS = 1
 
-export function CalendarScreen(): JSX.Element {
+export function CalendarScreenBody(): JSX.Element {
     const startDate = DateTime.now().startOf('year')
     const endDate = startDate.plus({ years: YEARS })
 
@@ -19,11 +18,9 @@ export function CalendarScreen(): JSX.Element {
     }
 
     return (
-        <BaseScreen>
-            <Stack gap={1}>
-                {months}
-            </Stack>
-        </BaseScreen>
+        <Stack gap={1}>
+            {months}
+        </Stack>
     )
 }
 

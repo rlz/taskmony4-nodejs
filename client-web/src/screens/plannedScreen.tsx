@@ -4,20 +4,19 @@ import { observer } from 'mobx-react-lite'
 import React, { JSX, useState } from 'react'
 
 import { ActiveTaskView } from '../components/activeTaskView'
-import { BaseScreen } from '../components/baseScreen'
 import { SimpleFab } from '../components/fab'
 import { TaskEditor } from '../components/taskEditor'
 import { useEngine } from '../engine/engine'
 import { useAppState } from '../state'
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const PlannedScreen = observer(function PlannedScreen(): JSX.Element {
+export const PlannedScreenBody = observer(function PlannedScreenBody(): JSX.Element {
     const appState = useAppState()
     const engine = useEngine()
     const [editTask, setEditTask] = useState<string | null | undefined>(undefined)
 
     return (
-        <BaseScreen>
+        <>
             <Stack p={1} gap={1}>
                 {
                     engine.activeTasks.map((i) => {
@@ -64,6 +63,6 @@ export const PlannedScreen = observer(function PlannedScreen(): JSX.Element {
                     )
                 }
             </Stack>
-        </BaseScreen>
+        </>
     )
 })

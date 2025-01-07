@@ -16,13 +16,14 @@ import { NotFound } from 'rlz-engine/dist/client/screens/404'
 import { SignupSigninScreen } from 'rlz-engine/dist/client/screens/SignupSigninScreen'
 import { useAuthState } from 'rlz-engine/dist/client/state/auth'
 
+import { BaseScreen } from './components/baseScreen'
 import { Engine, EngineContext } from './engine/engine'
 import { syncTasks } from './engine/sync'
 import { LocalStorage } from './localstorage/storage'
-import { CalendarScreen } from './screens/calendarScreen'
-import { FinishedScreen } from './screens/finishedScreen'
-import { PlannedScreen } from './screens/plannedScreen'
-import { TodayScreen } from './screens/todayScreen'
+import { CalendarScreenBody } from './screens/calendarScreen'
+import { FinishedScreenBody } from './screens/finishedScreen'
+import { PlannedScreenBody } from './screens/plannedScreen'
+import { TodayScreenBody } from './screens/todayScreen'
 import { AppState, AppStateContext } from './state'
 
 installIntoGlobal()
@@ -34,15 +35,15 @@ function LoginScreen() {
 const ROUTER = createBrowserRouter([
     {
         path: '/',
-        Component: TodayScreen
+        element: <BaseScreen><TodayScreenBody /></BaseScreen>
     },
     {
         path: '/planned',
-        Component: PlannedScreen
+        element: <BaseScreen><PlannedScreenBody /></BaseScreen>
     },
     {
         path: '/finished',
-        Component: FinishedScreen
+        element: <BaseScreen><FinishedScreenBody /></BaseScreen>
     },
     {
         path: '/signin',
@@ -54,7 +55,7 @@ const ROUTER = createBrowserRouter([
     },
     {
         path: '/calendar',
-        Component: CalendarScreen
+        element: <BaseScreen><CalendarScreenBody /></BaseScreen>
     },
     {
         path: '*',

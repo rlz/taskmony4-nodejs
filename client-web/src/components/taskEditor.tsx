@@ -9,6 +9,7 @@ import { uuidv7 } from 'uuidv7'
 
 import { useEngine } from '../engine/engine'
 import { Task } from '../engine/model'
+import { useAppState } from '../state'
 
 interface Props {
     open: boolean
@@ -18,10 +19,11 @@ interface Props {
 }
 
 export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element {
+    const appState = useAppState()
     const engine = useEngine()
     const theme = useTheme()
 
-    const [date, setDate] = useState(utcToday())
+    const [date, setDate] = useState(appState.today)
     const [title, setTitle] = useState('')
     const [category, setCategory] = useState(engine.mostPopularCat)
 
@@ -35,18 +37,19 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
             setTitle('')
             setCategory(engine.mostPopularCat)
         }
-    }, [task])
+    }, [task, appState.today])
 
     const catPalette = engine.palette
 
     const save = async () => {
         if (task !== undefined) {
             await onSave({
-                ...task,
+                id: task.id,
                 lastModified: DateTime.utc(),
                 title,
                 date,
-                category
+                category,
+                finished: task.finished
             })
         } else {
             await onSave({
@@ -57,6 +60,9 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
                 date,
                 finished: null
             })
+            setDate(appState.today)
+            setTitle('')
+            setCategory(engine.mostPopularCat)
         }
     }
 

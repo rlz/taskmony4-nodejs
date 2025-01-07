@@ -4,19 +4,20 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 
-import { createTheme, CssBaseline, responsiveFontSizes, ThemeProvider, useMediaQuery } from '@mui/material'
+import { Box, createTheme, CssBaseline, responsiveFontSizes, ThemeProvider, useMediaQuery } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { installIntoGlobal } from 'iterator-helpers-polyfill'
 import { autorun } from 'mobx'
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { NotFound } from 'rlz-engine/dist/client/screens/404'
 import { SignupSigninScreen } from 'rlz-engine/dist/client/screens/SignupSigninScreen'
 import { useAuthState } from 'rlz-engine/dist/client/state/auth'
 
 import { BaseScreen } from './components/baseScreen'
+import { TasksTabs } from './components/tasksTabs'
 import { Engine, EngineContext } from './engine/engine'
 import { syncTasks } from './engine/sync'
 import { LocalStorage } from './localstorage/storage'
@@ -35,15 +36,44 @@ function LoginScreen() {
 const ROUTER = createBrowserRouter([
     {
         path: '/',
-        element: <BaseScreen><TodayScreenBody /></BaseScreen>
+        element: <Navigate to={'/tasks'} />
     },
     {
-        path: '/planned',
-        element: <BaseScreen><PlannedScreenBody /></BaseScreen>
+        path: '/tasks',
+        element: <Navigate to={'/tasks/today'} />
     },
     {
-        path: '/finished',
-        element: <BaseScreen><FinishedScreenBody /></BaseScreen>
+        path: '/tasks/today',
+        element: (
+            <BaseScreen>
+                <TasksTabs />
+                <Box overflow={'auto'} flexBasis={0} flexGrow={1}>
+                    <TodayScreenBody />
+                </Box>
+            </BaseScreen>
+        )
+    },
+    {
+        path: '/tasks/planned',
+        element: (
+            <BaseScreen>
+                <TasksTabs />
+                <Box overflow={'auto'} flexBasis={0} flexGrow={1}>
+                    <PlannedScreenBody />
+                </Box>
+            </BaseScreen>
+        )
+    },
+    {
+        path: '/tasks/finished',
+        element: (
+            <BaseScreen>
+                <TasksTabs />
+                <Box overflow={'auto'} flexBasis={0} flexGrow={1}>
+                    <FinishedScreenBody />
+                </Box>
+            </BaseScreen>
+        )
     },
     {
         path: '/signin',

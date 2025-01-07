@@ -1,5 +1,5 @@
-import { CalendarMonth as CalendarMonthIcon, ChecklistRtl as ChecklistRtlIcon, PendingActions as PendingActionsIcon, Today as TodayIcon } from '@mui/icons-material'
-import { AppBar, BottomNavigation, BottomNavigationAction, Box, Button, Stack, SxProps, Toolbar, Typography } from '@mui/material'
+import { CalendarMonth as CalendarMonthIcon, FormatListBulleted as FormatListBulletedIcon } from '@mui/icons-material'
+import { AppBar, BottomNavigation, BottomNavigationAction, Button, Stack, SxProps, Toolbar, Typography } from '@mui/material'
 import { observer } from 'mobx-react-lite'
 import React, { PropsWithChildren } from 'react'
 import { JSX } from 'react'
@@ -41,24 +41,22 @@ export const BaseScreen = observer(function BaseScreen({ children }: PropsWithCh
                     </Button>
                 </Toolbar>
             </AppBar>
-            <Box
+            <Stack
                 overflow={'auto'}
                 flexGrow={1}
                 flexBasis={0}
             >
                 {children}
-            </Box>
+            </Stack>
             <BottomNavigation
                 showLabels
-                value={location.pathname}
+                value={location.pathname.split('/')[1]}
                 onChange={async (_, newValue) => {
-                    await navigate(newValue)
+                    await navigate(`/${newValue}`)
                 }}
             >
-                <BottomNavigationAction value={'/'} label={'Today'} icon={<TodayIcon />} />
-                <BottomNavigationAction value={'/planned'} label={'Planned'} icon={<PendingActionsIcon />} />
-                <BottomNavigationAction value={'/finished'} label={'Finished'} icon={<ChecklistRtlIcon />} />
-                <BottomNavigationAction value={'/calendar'} label={'Calendar'} icon={<CalendarMonthIcon />} />
+                <BottomNavigationAction value={'tasks'} label={'Tasks'} icon={<FormatListBulletedIcon />} />
+                <BottomNavigationAction value={'calendar'} label={'Calendar'} icon={<CalendarMonthIcon />} />
             </BottomNavigation>
         </Stack>
     )

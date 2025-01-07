@@ -9,13 +9,14 @@ import { SimpleFab } from '../components/fab'
 import { FinishedTaskView } from '../components/finishedTaskView'
 import { TaskEditor } from '../components/taskEditor'
 import { useEngine } from '../engine/engine'
+import { Task } from '../engine/model'
 import { useAppState } from '../state'
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const TodayScreenBody = observer(function TodayScreenBody(): JSX.Element {
     const appState = useAppState()
     const engine = useEngine()
-    const [editTask, setEditTask] = useState<string | null | undefined>(undefined)
+    const [editTask, setEditTask] = useState<Task | null | undefined>(undefined)
 
     const todayFinishedTasks = engine.finishedTasks.filter(i => i.finished.toMillis() === appState.today.toMillis())
 
@@ -27,38 +28,15 @@ export const TodayScreenBody = observer(function TodayScreenBody(): JSX.Element 
                 </Typography>
                 {
                     engine.activeTasks.filter(i => i.date <= appState.today).map((i) => {
-                        return i.id === editTask
-                            ? (
-                                    <TaskEditor
-                                        key={i.id}
-                                        task={i}
-                                        onSave={(t) => {
-                                            engine.pushTask(t)
-                                            setEditTask(undefined)
-                                        }}
-                                        onCancel={() => setEditTask(undefined)}
-                                    />
-                                )
-                            : (
-                                    <ActiveTaskView
-                                        key={i.id}
-                                        task={i}
-                                        onDone={() => engine.pushTask({ ...i, finished: appState.today, lastModified: DateTime.utc() })}
-                                        onEdit={() => setEditTask(i.id)}
-                                    />
-                                )
+                        return (
+                            <ActiveTaskView
+                                key={i.id}
+                                task={i}
+                                onDone={() => engine.pushTask({ ...i, finished: appState.today, lastModified: DateTime.utc() })}
+                                onEdit={() => setEditTask(i)}
+                            />
+                        )
                     })
-                }
-                {
-                    editTask === null && (
-                        <TaskEditor
-                            onSave={(t) => {
-                                engine.pushTask(t)
-                                setEditTask(undefined)
-                            }}
-                            onCancel={() => setEditTask(undefined)}
-                        />
-                    )
                 }
                 {
                     todayFinishedTasks.length > 0 && (
@@ -81,6 +59,17 @@ export const TodayScreenBody = observer(function TodayScreenBody(): JSX.Element 
                     )
                 }
             </Stack>
+            {
+                <TaskEditor
+                    open={editTask !== undefined}
+                    task={editTask ?? undefined}
+                    onSave={(t) => {
+                        engine.pushTask(t)
+                        setEditTask(undefined)
+                    }}
+                    onCancel={() => setEditTask(undefined)}
+                />
+            }
             {
                 editTask === undefined
                 && (

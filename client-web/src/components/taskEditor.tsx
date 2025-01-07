@@ -1,7 +1,8 @@
-import { Button, Paper, Stack, TextField, Typography, useTheme } from '@mui/material'
+import { Close as CloseIcon } from '@mui/icons-material'
+import { Button, Drawer, IconButton, Stack, TextField, Typography, useTheme } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { DateTime } from 'luxon'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { JSX } from 'react'
 import { utcToday } from 'rlz-engine/dist/shared/utils/datetime'
 import { uuidv7 } from 'uuidv7'
@@ -10,18 +11,31 @@ import { useEngine } from '../engine/engine'
 import { Task } from '../engine/model'
 
 interface Props {
+    open: boolean
     task?: Task
     onSave: (task: Task) => Promise<void> | void
     onCancel: () => Promise<void> | void
 }
 
-export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
+export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element {
     const engine = useEngine()
     const theme = useTheme()
 
-    const [date, setDate] = useState(task === undefined ? utcToday() : task.date)
-    const [title, setTitle] = useState(task === undefined ? '' : task.title)
-    const [category, setCategory] = useState(task === undefined ? engine.mostPopularCat : task.category)
+    const [date, setDate] = useState(utcToday())
+    const [title, setTitle] = useState('')
+    const [category, setCategory] = useState(engine.mostPopularCat)
+
+    useEffect(() => {
+        if (task !== undefined) {
+            setDate(task.date)
+            setTitle(task.title)
+            setCategory(task.category)
+        } else {
+            setDate(utcToday())
+            setTitle('')
+            setCategory(engine.mostPopularCat)
+        }
+    }, [task])
 
     const catPalette = engine.palette
 
@@ -47,14 +61,13 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
     }
 
     return (
-        <Paper variant={'outlined'}>
+        <Drawer anchor={'bottom'} open={open}>
             <Stack p={1} gap={2}>
                 <Stack direction={'row'} gap={1} alignItems={'center'}>
                     <Typography color={'primary'} variant={'h5'} flexGrow={1}>
                         {task === undefined ? 'New task' : 'Edit task'}
                     </Typography>
-                    <Button size={'small'} onClick={onCancel}>{'Cancel'}</Button>
-                    <Button variant={'contained'} size={'small'} onClick={save}>{'Save'}</Button>
+                    <IconButton size={'small'} onClick={onCancel}><CloseIcon /></IconButton>
                 </Stack>
                 <DatePicker
                     label={'Start date'}
@@ -124,7 +137,13 @@ export function TaskEditor({ task, onSave, onCancel }: Props): JSX.Element {
                         })
                     }
                 </Stack>
+                <Button
+                    variant={'contained'}
+                    onClick={save}
+                >
+                    {'Save'}
+                </Button>
             </Stack>
-        </Paper>
+        </Drawer>
     )
 }

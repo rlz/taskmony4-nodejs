@@ -1,4 +1,4 @@
-import { ChecklistRtl as ChecklistRtlIcon, PendingActions as PendingActionsIcon, Today as TodayIcon } from '@mui/icons-material'
+import { CalendarMonth as CalendarMonthIcon, ChecklistRtl as ChecklistRtlIcon, PendingActions as PendingActionsIcon, Today as TodayIcon } from '@mui/icons-material'
 import { AppBar, BottomNavigation, BottomNavigationAction, Box, Button, Fab, Stack, SxProps, Toolbar, Typography, useTheme } from '@mui/material'
 import { observer } from 'mobx-react-lite'
 import React, { ComponentType, PropsWithChildren } from 'react'
@@ -57,7 +57,6 @@ export const BaseScreen = observer(function BaseScreen({ children, fabIcon, onFa
             </AppBar>
             <Box
                 overflow={'auto'}
-                color={'white'}
                 flexGrow={1}
                 flexBasis={0}
             >
@@ -83,6 +82,7 @@ export const BaseScreen = observer(function BaseScreen({ children, fabIcon, onFa
                 <BottomNavigationAction value={'/'} label={'Today'} icon={<TodayIcon />} />
                 <BottomNavigationAction value={'/planned'} label={'Planned'} icon={<PendingActionsIcon />} />
                 <BottomNavigationAction value={'/finished'} label={'Finished'} icon={<ChecklistRtlIcon />} />
+                <BottomNavigationAction value={'/calendar'} label={'Calendar'} icon={<CalendarMonthIcon />} />
             </BottomNavigation>
         </Stack>
     )

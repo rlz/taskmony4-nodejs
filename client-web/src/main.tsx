@@ -19,6 +19,7 @@ import { useAuthState } from 'rlz-engine/dist/client/state/auth'
 import { Engine, EngineContext } from './engine/engine'
 import { syncTasks } from './engine/sync'
 import { LocalStorage } from './localstorage/storage'
+import { CalendarScreen } from './screens/calendarScreen'
 import { FinishedScreen } from './screens/finishedScreen'
 import { PlannedScreen } from './screens/plannedScreen'
 import { TodayScreen } from './screens/todayScreen'
@@ -50,6 +51,10 @@ const ROUTER = createBrowserRouter([
     {
         path: '/signup',
         Component: LoginScreen
+    },
+    {
+        path: '/calendar',
+        Component: CalendarScreen
     },
     {
         path: '*',

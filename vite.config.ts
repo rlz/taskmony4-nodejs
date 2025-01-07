@@ -20,10 +20,6 @@ export default defineConfig({
                 background_color: '#181818',
                 theme_color: '#9CC8F5',
                 scope: '/'
-            },
-
-            devOptions: {
-                enabled: true
             }
         })
     ]

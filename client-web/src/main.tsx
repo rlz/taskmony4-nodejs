@@ -9,6 +9,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { installIntoGlobal } from 'iterator-helpers-polyfill'
 import { autorun } from 'mobx'
+import { observer } from 'mobx-react-lite'
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
@@ -18,11 +19,12 @@ import { useAuthState } from 'rlz-engine/dist/client/state/auth'
 
 import { BaseScreen } from './components/baseScreen'
 import { TasksTabs } from './components/tasksTabs'
-import { Engine, EngineContext } from './engine/engine'
+import { Engine, EngineContext, useEngine } from './engine/engine'
 import { syncTasks } from './engine/sync'
 import { LocalStorage } from './localstorage/storage'
 import { CalendarScreenBody } from './screens/calendarScreen'
 import { FinishedScreenBody } from './screens/finishedScreen'
+import { LoadingScreen } from './screens/loadingScreen'
 import { PlannedScreenBody } from './screens/plannedScreen'
 import { TodayScreenBody } from './screens/todayScreen'
 import { AppState, AppStateContext } from './state'
@@ -137,7 +139,7 @@ function App() {
                     <AppStateContext value={appState}>
                         <EngineContext value={engine}>
                             <CssBaseline />
-                            <RouterProvider router={ROUTER} />
+                            <WaitForInit />
                         </EngineContext>
                     </AppStateContext>
                 </LocalizationProvider>
@@ -145,5 +147,14 @@ function App() {
         </React.StrictMode>
     )
 }
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const WaitForInit = observer(function WaitForInit() {
+    const engine = useEngine()
+
+    return engine.initialised
+        ? <RouterProvider router={ROUTER} />
+        : <LoadingScreen />
+})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<App />)

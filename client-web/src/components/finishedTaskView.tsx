@@ -38,7 +38,7 @@ export function FinishedTaskView({ task, onUndone }: FinishedTaskViewProps): JSX
                     px={1}
                     borderRadius={'0 0px 4px 4px'}
                 >
-                    {task.finished.toFormat('dd LLL yyyy')}
+                    {task.date.toFormat('dd LLL yyyy')}
                 </Box>
             </Stack>
             <Stack direction={'row'} gap={1} p={1} alignItems={'center'}>

@@ -5,6 +5,7 @@ import React, { JSX, useState } from 'react'
 
 import { ActiveTaskView } from '../components/activeTaskView'
 import { BaseScreen } from '../components/baseScreen'
+import { SimpleFab } from '../components/fab'
 import { TaskEditor } from '../components/taskEditor'
 import { useEngine } from '../engine/engine'
 import { useAppState } from '../state'
@@ -16,10 +17,7 @@ export const PlannedScreen = observer(function PlannedScreen(): JSX.Element {
     const [editTask, setEditTask] = useState<string | null | undefined>(undefined)
 
     return (
-        <BaseScreen
-            fabIcon={editTask === undefined ? AddIcon : undefined}
-            onFabClick={() => setEditTask(null)}
-        >
+        <BaseScreen>
             <Stack p={1} gap={1}>
                 {
                     engine.activeTasks.map((i) => {
@@ -53,6 +51,15 @@ export const PlannedScreen = observer(function PlannedScreen(): JSX.Element {
                                 setEditTask(undefined)
                             }}
                             onCancel={() => setEditTask(undefined)}
+                        />
+                    )
+                }
+                {
+                    editTask === undefined
+                    && (
+                        <SimpleFab
+                            fabIcon={AddIcon}
+                            onFabClick={() => setEditTask(null)}
                         />
                     )
                 }

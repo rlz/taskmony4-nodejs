@@ -6,6 +6,7 @@ import React, { JSX, useState } from 'react'
 
 import { ActiveTaskView } from '../components/activeTaskView'
 import { BaseScreen } from '../components/baseScreen'
+import { SimpleFab } from '../components/fab'
 import { FinishedTaskView } from '../components/finishedTaskView'
 import { TaskEditor } from '../components/taskEditor'
 import { useEngine } from '../engine/engine'
@@ -20,10 +21,7 @@ export const TodayScreen = observer(function TodayScreen(): JSX.Element {
     const todayFinishedTasks = engine.finishedTasks.filter(i => i.finished.toMillis() === appState.today.toMillis())
 
     return (
-        <BaseScreen
-            fabIcon={editTask === undefined ? AddIcon : undefined}
-            onFabClick={() => setEditTask(null)}
-        >
+        <BaseScreen>
             <Stack p={1} gap={1}>
                 <Typography variant={'h6'} color={'primary'}>
                     {'Todo'}
@@ -84,6 +82,15 @@ export const TodayScreen = observer(function TodayScreen(): JSX.Element {
                     )
                 }
             </Stack>
+            {
+                editTask === undefined
+                && (
+                    <SimpleFab
+                        fabIcon={AddIcon}
+                        onFabClick={() => setEditTask(null)}
+                    />
+                )
+            }
         </BaseScreen>
     )
 })

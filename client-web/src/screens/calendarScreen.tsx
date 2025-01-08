@@ -5,22 +5,39 @@ import React from 'react'
 
 import { dateType, DAY_TYPE } from '../utils/calendar'
 
-const YEARS = 1
+const YEARS = 3
 
 export function CalendarScreenBody(): JSX.Element {
     const startDate = DateTime.now().startOf('year')
     const endDate = startDate.plus({ years: YEARS })
 
-    const months: JSX.Element[] = []
+    const years: { year: string, months: JSX.Element[] }[] = []
+
+    let curMonths: JSX.Element[] = []
 
     for (let date = startDate; date < endDate; date = date.plus({ month: 1 })) {
-        months.push(<Month key={date.toMillis()} startDate={date} />)
+        if (date.month === 1) {
+            curMonths = []
+            years.push({ year: date.toFormat('yyyy'), months: curMonths })
+        }
+        curMonths.push(<Month key={date.toMillis()} startDate={date} />)
     }
 
     return (
-        <Stack gap={1}>
-            {months}
-        </Stack>
+        <Box>
+            {
+                years.map(({ year, months }) => {
+                    return (
+                        <>
+                            <Typography variant={'h5'} textAlign={'center'} pt={2}>{year}</Typography>
+                            <Stack direction={'row'} columnGap={4} rowGap={1} flexWrap={'wrap'} px={2} pb={3} justifyContent={'center'}>
+                                {months}
+                            </Stack>
+                        </>
+                    )
+                })
+            }
+        </Box>
     )
 }
 
@@ -39,8 +56,8 @@ function Month({ startDate }: MonthProps): JSX.Element {
 
     return (
         <Stack gap={1}>
-            <Typography variant={'h6'} textAlign={'center'} pt={2}>
-                {startDate.toFormat('yyyy, LLLL')}
+            <Typography variant={'h6'} textAlign={'center'} pt={1}>
+                {startDate.toFormat('LLLL')}
             </Typography>
             {weeks}
         </Stack>

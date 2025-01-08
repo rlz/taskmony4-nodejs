@@ -1,5 +1,6 @@
 import { ArrowRight as ArrowRightIcon, CheckBox as CheckBoxIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, Edit as EditIcon } from '@mui/icons-material'
 import { Box, Collapse, IconButton, Paper, Stack, styled, Typography } from '@mui/material'
+import { DateTime } from 'luxon'
 import React, { JSX, useState } from 'react'
 import { TransitionGroup } from 'react-transition-group'
 
@@ -64,7 +65,8 @@ export function ChecklistView({ checklist, onOpen, onEdit }: Props): JSX.Element
                                                                     name: item2.name,
                                                                     checked: !item2.checked
                                                                 }
-                                                            })
+                                                            }),
+                                                            lastModified: DateTime.utc()
                                                         })
                                                     }}
                                                 >

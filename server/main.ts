@@ -1,5 +1,6 @@
 import { AUTH_API } from 'rlz-engine/dist/back/auth/controllers'
 import { AuthStorage } from 'rlz-engine/dist/back/auth/storage'
+import { PRODUCTION } from 'rlz-engine/dist/back/config'
 import { logger } from 'rlz-engine/dist/back/logger'
 import { runServer } from 'rlz-engine/dist/back/server'
 import { MongoStorage } from 'rlz-engine/dist/back/storage/db'
@@ -7,7 +8,6 @@ import { MongoStorage } from 'rlz-engine/dist/back/storage/db'
 import { TASKS_API } from './tasks/controllers'
 import { TasksStorage } from './tasks/storage'
 
-const PRODUCTION = process.env.NODE_ENV === 'production'
 const DOMAIN = 'app.taskmony.ru'
 const CERT_DIR = './cert'
 

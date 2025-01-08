@@ -5,7 +5,7 @@ import React from 'react'
 
 import { dateType, DAY_TYPE } from '../utils/calendar'
 
-const YEARS = 3
+const YEARS = 1
 
 export function CalendarScreenBody(): JSX.Element {
     const startDate = DateTime.now().startOf('year')

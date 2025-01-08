@@ -2,6 +2,7 @@ import { Add as AddIcon } from '@mui/icons-material'
 import { Stack, Typography } from '@mui/material'
 import { observer } from 'mobx-react-lite'
 import React, { JSX, useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 import { ActiveTaskView } from '../components/activeTaskView'
 import { SimpleFab } from '../components/fab'
@@ -15,6 +16,8 @@ export const PlannedScreenBody = observer(function PlannedScreenBody(): JSX.Elem
     const appState = useAppState()
     const engine = useEngine()
     const [editTask, setEditTask] = useState<Task | null | undefined>(undefined)
+
+    useHotkeys('ctrl+n,/', () => setEditTask(null), { preventDefault: true })
 
     const tomorrowTasks: ActiveTask[] = []
     const in10DaysTasks: ActiveTask[] = []

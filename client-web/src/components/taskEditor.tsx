@@ -67,7 +67,15 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
     }
 
     return (
-        <Drawer anchor={'bottom'} open={open}>
+        <Drawer
+            anchor={'bottom'}
+            open={open}
+            onClose={async (_, reason) => {
+                if (reason === 'escapeKeyDown') {
+                    await onCancel()
+                }
+            }}
+        >
             <Stack p={1} gap={2}>
                 <Stack direction={'row'} gap={1} alignItems={'center'}>
                     <Typography color={'primary'} variant={'h5'} flexGrow={1}>

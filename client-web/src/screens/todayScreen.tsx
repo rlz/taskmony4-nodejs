@@ -3,6 +3,7 @@ import { Stack, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 import { observer } from 'mobx-react-lite'
 import React, { JSX, useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 import { ActiveTaskView } from '../components/activeTaskView'
 import { SimpleFab } from '../components/fab'
@@ -17,6 +18,8 @@ export const TodayScreenBody = observer(function TodayScreenBody(): JSX.Element 
     const appState = useAppState()
     const engine = useEngine()
     const [editTask, setEditTask] = useState<Task | null | undefined>(undefined)
+
+    useHotkeys('ctrl+n,/', () => setEditTask(null), { preventDefault: true })
 
     const todayFinishedTasks = engine.finishedTasks.filter(i => i.finished.toMillis() === appState.today.toMillis())
 

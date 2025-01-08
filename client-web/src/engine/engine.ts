@@ -159,11 +159,11 @@ function activeTasksCompare(i1: Task, i2: Task): number {
 
 function checklistsCompare(i1: Checklist, i2: Checklist): number {
     if (i1.lastModified < i2.lastModified) {
-        return -1
+        return 1
     }
 
     if (i1.lastModified > i2.lastModified) {
-        return 1
+        return -1
     }
 
     return 0

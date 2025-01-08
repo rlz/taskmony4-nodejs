@@ -2,10 +2,11 @@ import { action, computed, makeObservable, observable } from 'mobx'
 import { createContext, useContext } from 'react'
 
 import { paletteGenerator } from '../utils/colors'
-import { ActiveTask, FinishedTask, Task } from './model'
+import { ActiveTask, Checklist, FinishedTask, Task } from './model'
 
 export interface EngineDataChangeListener {
     onTaskChange: (t: Task) => void | Promise<void>
+    onChecklistChange: (c: Checklist) => void | Promise<void>
     onClearDate: () => void | Promise<void>
 }
 
@@ -14,6 +15,8 @@ export class Engine {
 
     finishedTasks: readonly FinishedTask[] = []
     activeTasks: readonly ActiveTask[] = []
+
+    checklists: readonly Checklist[] = []
 
     private readonly subscribtions: EngineDataChangeListener[] = []
 
@@ -24,7 +27,10 @@ export class Engine {
                 initialised: observable,
                 finishedTasks: observable.shallow,
                 activeTasks: observable.shallow,
+                checklists: observable.shallow,
+                init: action,
                 pushTask: action,
+                pushChecklist: action,
                 clearData: action,
                 mostPopularCat: computed,
                 categories: computed,
@@ -45,6 +51,11 @@ export class Engine {
         this.subscribtions.forEach(i => i.onTaskChange(task))
     }
 
+    pushChecklist(checklist: Checklist) {
+        this.checklists = this.checklists.filter(i => i.id !== checklist.id).concat(checklist).sort(checklistsCompare)
+        this.subscribtions.forEach(i => i.onChecklistChange(checklist))
+    }
+
     clearData() {
         this.activeTasks = []
         this.finishedTasks = []
@@ -56,12 +67,14 @@ export class Engine {
         this.subscribtions.push(listener)
     }
 
-    init(tasks: readonly Task[]) {
+    init(tasks: readonly Task[], checklists: readonly Checklist[]) {
         this.initialised = true
 
         this.finishedTasks = tasks.filter(i => i.finished !== null).sort(finishedTasksCompare)
 
         this.activeTasks = tasks.filter(i => i.finished === null).sort(activeTasksCompare)
+
+        this.checklists = [...checklists].sort(checklistsCompare)
     }
 
     requireInitialized() {
@@ -138,6 +151,18 @@ function activeTasksCompare(i1: Task, i2: Task): number {
     }
 
     if (i1.date > i2.date) {
+        return 1
+    }
+
+    return 0
+}
+
+function checklistsCompare(i1: Checklist, i2: Checklist): number {
+    if (i1.lastModified < i2.lastModified) {
+        return -1
+    }
+
+    if (i1.lastModified > i2.lastModified) {
         return 1
     }
 

@@ -1,4 +1,4 @@
-import { CalendarMonth as CalendarMonthIcon, FormatListBulleted as FormatListBulletedIcon } from '@mui/icons-material'
+import { CalendarMonth as CalendarMonthIcon, Checklist as ChecklistIcon, FormatListBulleted as FormatListBulletedIcon } from '@mui/icons-material'
 import { AppBar, BottomNavigation, BottomNavigationAction, Button, Stack, SxProps, Toolbar, Typography } from '@mui/material'
 import { observer } from 'mobx-react-lite'
 import React, { PropsWithChildren } from 'react'
@@ -56,6 +56,7 @@ export const BaseScreen = observer(function BaseScreen({ children }: PropsWithCh
                 }}
             >
                 <BottomNavigationAction value={'tasks'} label={'Tasks'} icon={<FormatListBulletedIcon />} />
+                <BottomNavigationAction value={'checklists'} label={'Checklists'} icon={<ChecklistIcon />} />
                 <BottomNavigationAction value={'calendar'} label={'Calendar'} icon={<CalendarMonthIcon />} />
             </BottomNavigation>
         </Stack>

@@ -7,6 +7,6 @@ export const API_TASK_SCHEMA_V0 = z.object({
     title: z.string(),
     date: z.string().date(),
     finished: z.string().date().or(z.null())
-})
+}).readonly()
 
 export type ApiTaskV0 = z.infer<typeof API_TASK_SCHEMA_V0>

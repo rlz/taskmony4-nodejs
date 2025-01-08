@@ -1,10 +1,11 @@
 import { type IDBPDatabase, openDB } from 'idb'
 
 import { Engine } from '../engine/engine'
-import { Task } from '../engine/model'
-import { taskFromIdb, taskToIdb } from './model'
+import { Checklist, Task } from '../engine/model'
+import { checklistFromIdb, checklistToIdb, taskFromIdb, taskToIdb } from './model'
 
 const TASK_STORE_NAME = 'tasks'
+const CHECKLIST_STORE_NAME = 'checklists'
 
 export class LocalStorage {
     private engine: Engine
@@ -12,6 +13,7 @@ export class LocalStorage {
     constructor(engine: Engine) {
         engine.subscribe({
             onTaskChange: t => this.putTask(t),
+            onChecklistChange: c => this.putChecklist(c),
             onClearDate: () => this.clearData()
         })
 
@@ -20,16 +22,21 @@ export class LocalStorage {
 
     async loadData() {
         const tasks = await this.readAllTasks()
-        this.engine.init(tasks)
+        const checklists = await this.readAllChecklists()
+        this.engine.init(tasks, checklists)
     }
 
     private async openDb(): Promise<IDBPDatabase> {
-        return await openDB('Data', 1, {
+        return await openDB('Data', 2, {
             upgrade: (database, oldVersion, _newVersion, _transaction) => {
                 void (
                     async (): Promise<void> => {
                         if (oldVersion < 1) {
                             database.createObjectStore(TASK_STORE_NAME, { keyPath: 'id' })
+                        }
+
+                        if (oldVersion < 2) {
+                            database.createObjectStore(CHECKLIST_STORE_NAME, { keyPath: 'id' })
                         }
                     }
                 )()
@@ -51,11 +58,26 @@ export class LocalStorage {
         )
     }
 
+    async readAllChecklists(): Promise<Checklist[]> {
+        const db = await this.openDb()
+        const checklists = await db.getAll(CHECKLIST_STORE_NAME)
+        return (checklists).map(checklistFromIdb)
+    }
+
+    async putChecklist(checklist: Checklist): Promise<void> {
+        const db = await this.openDb()
+        await db.put(
+            CHECKLIST_STORE_NAME,
+            checklistToIdb(checklist)
+        )
+    }
+
     async clearData(): Promise<void> {
         const db = await this.openDb()
 
         await Promise.all([
-            await db.clear(TASK_STORE_NAME)
+            await db.clear(TASK_STORE_NAME),
+            await db.clear(CHECKLIST_STORE_NAME)
         ])
     }
 }

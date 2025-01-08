@@ -3,7 +3,7 @@ import { autorun, makeAutoObservable } from 'mobx'
 import { createContext, useContext } from 'react'
 import { toValid, utcToday } from 'rlz-engine/dist/shared/utils/datetime'
 
-const LAST_SYNC_DATE_KEY = 'lastSyncDate'
+const LAST_SYNC_DATE_KEY = 'LAST_SYNC_DATE'
 
 export class AppState {
     today = utcToday()

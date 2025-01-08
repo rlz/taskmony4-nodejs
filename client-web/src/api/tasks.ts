@@ -3,7 +3,7 @@ import { apiCall, AuthParam } from 'rlz-engine/dist/client/api/api'
 import { API_COMPARISON_OBJECT_SCHEMA_V0, API_ITEMS_RESPONSE_SCHEMA_V0, ApiGetObjectsRequestV0, ApiItemsRequestV0, ApiItemsResponseV0 } from 'rlz-engine/dist/shared/api/sync'
 import { z } from 'zod'
 
-import { API_TASK_SCHEMA_V0, ApiTaskV0 } from '../../common/tasks'
+import { API_TASK_SCHEMA_V0, ApiTaskV0 } from '../../../common/tasks'
 
 export async function apiTasks(auth: AuthParam, syncAfter: DateTime<true> | null): Promise<ApiItemsResponseV0<typeof API_COMPARISON_OBJECT_SCHEMA_V0>> {
     const queryString = syncAfter === null ? null : { syncAfter: syncAfter.toISO() }

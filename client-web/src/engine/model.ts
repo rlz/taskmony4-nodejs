@@ -17,3 +17,15 @@ export interface ActiveTask extends TaskCommon {
 }
 
 export type Task = FinishedTask | ActiveTask
+
+export interface ChecklistItem {
+    readonly name: string
+    readonly checked: boolean
+}
+
+export interface Checklist {
+    readonly id: string
+    readonly lastModified: DateTime<true>
+    readonly title: string
+    readonly items: readonly ChecklistItem[]
+}

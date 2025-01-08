@@ -11,6 +11,8 @@ import { installIntoGlobal } from 'iterator-helpers-polyfill'
 import { autorun } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import React, { useEffect } from 'react'
+import { DndProvider } from 'react-dnd'
+import { TouchBackend } from 'react-dnd-touch-backend'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { NotFound } from 'rlz-engine/dist/client/screens/404'
@@ -20,9 +22,10 @@ import { useAuthState } from 'rlz-engine/dist/client/state/auth'
 import { BaseScreen } from './components/baseScreen'
 import { TasksTabs } from './components/tasksTabs'
 import { Engine, EngineContext, useEngine } from './engine/engine'
-import { syncTasks } from './engine/sync'
+import { syncAll } from './engine/sync'
 import { LocalStorage } from './localstorage/storage'
 import { CalendarScreenBody } from './screens/calendarScreen'
+import { ChecklistsScreenBody } from './screens/checklistsScreen'
 import { FinishedScreenBody } from './screens/finishedScreen'
 import { LoadingScreen } from './screens/loadingScreen'
 import { PlannedScreenBody } from './screens/plannedScreen'
@@ -82,6 +85,14 @@ const ROUTER = createBrowserRouter([
         )
     },
     {
+        path: '/checklists',
+        element: (
+            <BaseScreen>
+                <ChecklistsScreenBody />
+            </BaseScreen>
+        )
+    },
+    {
         path: '/signin',
         Component: LoginScreen
     },
@@ -123,8 +134,9 @@ function App() {
                 if (authState.authParam !== null) {
                     void engine.activeTasks
                     void engine.finishedTasks
+                    void engine.checklists
                     setTimeout(async () => {
-                        await syncTasks(appState, authState, engine)
+                        await syncAll(appState, authState, engine)
                     }, 0)
                 } else {
                     setTimeout(() => {
@@ -140,12 +152,14 @@ function App() {
         <React.StrictMode>
             <ThemeProvider theme={theme}>
                 <LocalizationProvider dateAdapter={AdapterLuxon}>
-                    <AppStateContext value={appState}>
-                        <EngineContext value={engine}>
-                            <CssBaseline />
-                            <WaitForInit />
-                        </EngineContext>
-                    </AppStateContext>
+                    <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
+                        <AppStateContext value={appState}>
+                            <EngineContext value={engine}>
+                                <CssBaseline />
+                                <WaitForInit />
+                            </EngineContext>
+                        </AppStateContext>
+                    </DndProvider>
                 </LocalizationProvider>
             </ThemeProvider>
         </React.StrictMode>

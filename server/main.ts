@@ -5,6 +5,8 @@ import { logger } from 'rlz-engine/dist/back/logger'
 import { runServer } from 'rlz-engine/dist/back/server'
 import { MongoStorage } from 'rlz-engine/dist/back/storage/db'
 
+import { CHECKLISTS_API } from './checklists/controllers'
+import { ChecklistsStorage } from './checklists/storage'
 import { TASKS_API } from './tasks/controllers'
 import { TasksStorage } from './tasks/storage'
 
@@ -29,8 +31,12 @@ runServer({
         const tasksStorage = new TasksStorage(mongoStorage)
         await tasksStorage.init()
 
+        const checklistStorage = new ChecklistsStorage(mongoStorage)
+        await checklistStorage.init()
+
         server.register(AUTH_API, { storage: authStorage })
         server.register(TASKS_API, { storage: tasksStorage, auth: authStorage.auth })
+        server.register(CHECKLISTS_API, { storage: checklistStorage, auth: authStorage.auth })
     }
 })
     .catch((e) => {

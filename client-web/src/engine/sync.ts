@@ -4,13 +4,15 @@ import { AuthState } from 'rlz-engine/dist/client/state/auth'
 import { syncItems } from 'rlz-engine/dist/client/sync'
 import { toValid } from 'rlz-engine/dist/shared/utils/datetime'
 
+import { ApiChecklistV0 } from '../../../common/checklists'
 import { ApiTaskV0 } from '../../../common/tasks'
-import { apiPushTasks, apiTasks, apiTasksByIds } from '../api'
+import { apiChecklists, apiChecklistsByIds, apiPushChecklists } from '../api/checklists'
+import { apiPushTasks, apiTasks, apiTasksByIds } from '../api/tasks'
 import { AppState } from '../state'
 import { Engine } from './engine'
-import { Task } from './model'
+import { Checklist, Task } from './model'
 
-export async function syncTasks(appState: AppState, authState: AuthState, engine: Engine) {
+export async function syncAll(appState: AppState, authState: AuthState, engine: Engine) {
     const authParam = authState.authParam
 
     if (authParam === null) {
@@ -49,6 +51,35 @@ export async function syncTasks(appState: AppState, authState: AuthState, engine
             pushLocal: (items: readonly Task[]) => items.forEach(i => engine.pushTask(i)),
             lastSyncDate: appState.lastSyncDate
         })
+
+        await syncItems({
+            getRemoteLastModified: () => apiChecklists(authParam, appState.lastSyncDate),
+            localItems: engine.checklists,
+            pushRemote: (items: readonly Checklist[]) => apiPushChecklists(
+                items.map((i): ApiChecklistV0 => {
+                    return {
+                        id: i.id,
+                        lastModified: i.lastModified.toISO(),
+                        title: i.title,
+                        items: i.items
+                    }
+                }),
+                authParam
+            ),
+            getRemote: async (ids: readonly string[]) => (await apiChecklistsByIds(ids, authParam))
+                .items
+                .map((a): Checklist => {
+                    return {
+                        id: a.id,
+                        lastModified: toValid(DateTime.fromISO(a.lastModified, { zone: 'utc' })),
+                        title: a.title,
+                        items: a.items
+                    }
+                }),
+            pushLocal: (items: readonly Checklist[]) => items.forEach(i => engine.pushChecklist(i)),
+            lastSyncDate: appState.lastSyncDate
+        })
+
         appState.synced()
     } catch (e) {
         if (e instanceof Forbidden) {

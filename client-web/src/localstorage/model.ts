@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 
-import { Task } from '../engine/model'
+import { Checklist, Task } from '../engine/model'
 
 export interface IdbTaskV0 {
     readonly id: string
@@ -38,5 +38,36 @@ export function taskFromIdb(task: IdbTaskV0): Task {
         title: task.title,
         date,
         finished
+    }
+}
+
+export interface IdbChecklistV0 {
+    readonly id: string
+    readonly lastModified: number
+    readonly title: string
+    readonly items: readonly { readonly name: string, readonly checked: boolean }[]
+}
+
+export function checklistToIdb(checklist: Checklist): IdbChecklistV0 {
+    return {
+        id: checklist.id,
+        lastModified: checklist.lastModified.toMillis(),
+        title: checklist.title,
+        items: checklist.items
+    }
+}
+
+export function checklistFromIdb(checklist: IdbChecklistV0): Checklist {
+    const lastModified = DateTime.fromMillis(checklist.lastModified, { zone: 'utc' })
+
+    if (!lastModified.isValid) {
+        throw Error('Can not create DateTime')
+    }
+
+    return {
+        id: checklist.id,
+        lastModified,
+        title: checklist.title,
+        items: checklist.items
     }
 }

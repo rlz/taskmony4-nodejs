@@ -1,4 +1,4 @@
-import { ArrowRight as ArrowRightIcon, CheckBox as CheckBoxIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon } from '@mui/icons-material'
+import { ArrowRight as ArrowRightIcon, CheckBox as CheckBoxIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, Edit as EditIcon } from '@mui/icons-material'
 import { Box, Collapse, IconButton, Paper, Stack, styled, Typography } from '@mui/material'
 import React, { JSX, useState } from 'react'
 import { TransitionGroup } from 'react-transition-group'
@@ -27,22 +27,23 @@ export function ChecklistView({ checklist, onOpen, onEdit }: Props): JSX.Element
 
     return (
         <Paper variant={'outlined'}>
-            <Stack direction={'row'} p={0.5} alignItems={'center'}>
+            <Stack direction={'row'} p={0.5} alignItems={'center'} gap={1}>
                 <Box>
                     <IconButton size={'small'} onClick={() => setOpen(!open)}>
                         <RtIcon className={open ? 'open' : undefined} />
                     </IconButton>
                 </Box>
-                <a onClick={onOpen} style={{ flexGrow: 1 }}>
-                    <Box p={1}>{ checklist.title }</Box>
-                </a>
+                <Typography flexGrow={1} noWrap>{ checklist.title }</Typography>
+                <IconButton size={'small'} onClick={onOpen}>
+                    <EditIcon />
+                </IconButton>
             </Stack>
             <TransitionGroup>
                 {
                     open
                     && (
                         <Collapse>
-                            <Stack p={1}>
+                            <Stack p={1} gap={0.5}>
                                 {
                                     checklist.items.map((item, index) => {
                                         return (
@@ -69,7 +70,7 @@ export function ChecklistView({ checklist, onOpen, onEdit }: Props): JSX.Element
                                                 >
                                                     {item.checked ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
                                                 </a>
-                                                <Typography variant={'body2'}>{item.name}</Typography>
+                                                <Box>{item.name}</Box>
                                             </Stack>
                                         )
                                     })

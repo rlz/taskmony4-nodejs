@@ -10,11 +10,24 @@ export default defineConfig({
             registerType: 'autoUpdate',
             manifest: {
                 name: 'Taskmony',
+                short_name: 'Taskmony',
                 description: 'Personal task tracker',
                 icons: [
                     {
                         src: '/favicon.svg',
                         sizes: 'any'
+                    },
+                    {
+                        src: '/web-app-manifest-192x192.png',
+                        sizes: '192x192',
+                        type: 'image/png',
+                        purpose: 'maskable'
+                    },
+                    {
+                        src: '/web-app-manifest-512x512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'maskable'
                     }
                 ],
                 background_color: '#181818',

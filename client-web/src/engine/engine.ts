@@ -86,7 +86,7 @@ export class Engine {
     get mostPopularCat(): string {
         this.requireInitialized()
 
-        const categories = this.countCategories
+        const categories = this.rankCategories
 
         let maxCount = 0
         let maxCategory = 'default'
@@ -104,21 +104,24 @@ export class Engine {
     get categories(): readonly string[] {
         this.requireInitialized()
 
-        return Object.entries(this.countCategories).sort((a, b) => b[1] - a[1]).map(i => i[0])
+        return Object.entries(this.rankCategories).sort((a, b) => b[1] - a[1]).map(i => i[0])
     }
 
-    private get countCategories(): Record<string, number> {
+    private get rankCategories(): Record<string, number> {
         this.requireInitialized()
+
+        const tasks = [...this.finishedTasks, ...this.activeTasks].sort(activeTasksCompare)
 
         const categories: Record<string, number> = {}
 
-        this.activeTasks.forEach((i) => {
-            categories[i.category] = (categories[i.category] ?? 0) + 1
-        })
-
-        this.finishedTasks.forEach((i) => {
-            categories[i.category] = (categories[i.category] ?? 0) + 1
-        })
+        for (const t of tasks) {
+            for (const [c, v] of Object.entries(categories)) {
+                categories[c] = v * (c === t.category ? 1.03 : 0.99)
+            }
+            if (!(t.category in categories)) {
+                categories[t.category] = 1
+            }
+        }
 
         return categories
     }

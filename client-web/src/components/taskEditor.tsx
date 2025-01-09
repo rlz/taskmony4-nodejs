@@ -139,8 +139,8 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
                                             ...(c === category && {
                                                 backgroundColor: catPalette[c],
                                                 color: theme.palette.getContrastText(catPalette[c])
-                                            }
-                                            )
+                                            }),
+                                            fontSize: theme.typography.body2.fontSize
                                         }
                                     }
                                     onClick={() => setCategory(c)}

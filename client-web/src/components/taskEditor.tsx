@@ -1,5 +1,5 @@
 import { Close as CloseIcon } from '@mui/icons-material'
-import { Button, Drawer, IconButton, Stack, TextField, Typography, useTheme } from '@mui/material'
+import { Button, Drawer, IconButton, Stack, styled, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
@@ -18,10 +18,35 @@ interface Props {
     onCancel: () => Promise<void> | void
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const ActionLink = styled('button')(({ theme }) => {
+    return {
+        'padding': '4px 12px',
+        'border': `solid 1px ${theme.palette.secondary.main}`,
+        'borderRadius': '1000px',
+        'fontSize': theme.typography.body2.fontSize,
+        'color': theme.palette.secondary.main,
+        'backgroundColor': 'transparent',
+        '&.active': {
+            color: theme.palette.secondary.contrastText,
+            backgroundColor: theme.palette.secondary.main
+        }
+    }
+})
+
+interface ActionProps {
+    label: string
+    active: boolean
+    onClick: () => Promise<void> | void
+}
+
+function Action({ label, active, onClick }: ActionProps) {
+    return <ActionLink className={active ? 'active' : undefined} onClick={onClick}>{label}</ActionLink>
+}
+
 export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element {
     const appState = useAppState()
     const engine = useEngine()
-    const theme = useTheme()
 
     const [date, setDate] = useState(appState.today)
     const [title, setTitle] = useState('')
@@ -38,8 +63,6 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
             setCategory(engine.mostPopularCat)
         }
     }, [task, appState.today])
-
-    const catPalette = engine.palette
 
     const save = async () => {
         if (task !== undefined) {
@@ -66,6 +89,14 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
         }
     }
 
+    const today = appState.today
+    const tomorrow = today.plus({ day: 1 })
+    const weekend = today.isWeekend
+        ? today.plus({ day: 3 }).endOf('week').startOf('day').minus({ day: 1 })
+        : today.endOf('week').startOf('day').minus({ day: 1 })
+    const nextWeek = weekend.plus({ day: 2 })
+    const nextMonth = today.endOf('month').startOf('day').plus({ day: 1 })
+
     return (
         <Drawer
             anchor={'bottom'}
@@ -83,18 +114,6 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
                     </Typography>
                     <IconButton size={'small'} onClick={onCancel}><CloseIcon /></IconButton>
                 </Stack>
-                <DatePicker
-                    label={'Start date'}
-                    format={'dd LLL yyyy'}
-                    value={date}
-                    onAccept={d => setDate(d!)}
-                    timezone={'system'}
-                    slotProps={{
-                        textField: {
-                            size: 'small'
-                        }
-                    }}
-                />
                 <TextField
                     label={'Title'}
                     size={'small'}
@@ -108,6 +127,25 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
                         }
                     }}
                 />
+                <DatePicker
+                    label={'Start date'}
+                    format={'dd LLL yyyy'}
+                    value={date}
+                    onAccept={d => setDate(d!)}
+                    timezone={'system'}
+                    slotProps={{
+                        textField: {
+                            size: 'small'
+                        }
+                    }}
+                />
+                <Stack direction={'row'} flexWrap={'wrap'} gap={1} mb={1}>
+                    <Action active={today.equals(date)} label={'today'} onClick={() => setDate(today)} />
+                    <Action active={tomorrow.equals(date)} label={'tomorrow'} onClick={() => setDate(tomorrow)} />
+                    <Action active={weekend.equals(date)} label={'weekend'} onClick={() => setDate(weekend)} />
+                    <Action active={nextWeek.equals(date)} label={'next week'} onClick={() => setDate(nextWeek)} />
+                    <Action active={nextMonth.equals(date)} label={'next month'} onClick={() => setDate(nextMonth)} />
+                </Stack>
                 <TextField
                     label={'Category'}
                     size={'small'}
@@ -122,28 +160,15 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
                 />
                 <Stack direction={'row'} gap={1} flexWrap={'wrap'} pb={1}>
                     {
-                        engine.categories.map((c) => {
-                            return (
-                                <a
-                                    key={c}
-                                    style={
-                                        {
-                                            padding: '2px 12px',
-                                            border: `solid 1px ${catPalette[c]}`,
-                                            borderRadius: '1000px',
-                                            ...(c === category && {
-                                                backgroundColor: catPalette[c],
-                                                color: theme.palette.getContrastText(catPalette[c])
-                                            }),
-                                            fontSize: theme.typography.body2.fontSize
-                                        }
-                                    }
+                        engine.categories.map(
+                            c => (
+                                <Action
+                                    active={c === category}
+                                    label={c}
                                     onClick={() => setCategory(c)}
-                                >
-                                    {c}
-                                </a>
+                                />
                             )
-                        })
+                        )
                     }
                 </Stack>
                 <Button

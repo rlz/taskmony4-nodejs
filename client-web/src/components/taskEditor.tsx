@@ -128,14 +128,9 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
                                     key={c}
                                     style={
                                         {
+                                            padding: '2px 12px',
+                                            border: `solid 1px ${catPalette[c]}`,
                                             borderRadius: '1000px',
-                                            paddingLeft: '12px',
-                                            paddingRight: '12px',
-                                            paddingTop: '2px',
-                                            paddingBottom: '2px',
-                                            borderStyle: 'solid',
-                                            borderWidth: '1px',
-                                            borderColor: catPalette[c],
                                             ...(c === category && {
                                                 backgroundColor: catPalette[c],
                                                 color: theme.palette.getContrastText(catPalette[c])

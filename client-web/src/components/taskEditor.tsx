@@ -2,8 +2,9 @@ import { Close as CloseIcon } from '@mui/icons-material'
 import { Button, Drawer, IconButton, Stack, styled, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { DateTime } from 'luxon'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { JSX } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { utcToday } from 'rlz-engine/dist/shared/utils/datetime'
 import { uuidv7 } from 'uuidv7'
 
@@ -30,6 +31,9 @@ const ActionLink = styled('button')(({ theme }) => {
         '&.active': {
             color: theme.palette.secondary.contrastText,
             backgroundColor: theme.palette.secondary.main
+        },
+        '&:focus': {
+            outline: 0
         }
     }
 })
@@ -64,7 +68,7 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
         }
     }, [task, appState.today])
 
-    const save = async () => {
+    const save = useCallback(async () => {
         if (task !== undefined) {
             await onSave({
                 id: task.id,
@@ -87,7 +91,9 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
             setTitle('')
             setCategory(engine.mostPopularCat)
         }
-    }
+    }, [date, title, category, task, onSave])
+
+    useHotkeys('enter', () => save(), { preventDefault: true })
 
     const today = appState.today
     const tomorrow = today.plus({ day: 1 })

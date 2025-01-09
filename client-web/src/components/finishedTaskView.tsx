@@ -13,13 +13,16 @@ interface FinishedTaskViewProps {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const Action = styled('button')(({ theme }) => {
     return {
-        backgroundColor: 'transparent',
-        lineHeight: 0,
-        color: theme.palette.text.primary,
-        border: 0,
-        padding: 0,
-        fontSize: theme.typography.body1.fontSize,
-        textAlign: 'left'
+        'backgroundColor': 'transparent',
+        'lineHeight': 0,
+        'color': theme.palette.text.primary,
+        'border': 0,
+        'padding': 0,
+        'fontSize': theme.typography.body1.fontSize,
+        'textAlign': 'left',
+        '&:focus': {
+            outline: 0
+        }
     }
 })
 

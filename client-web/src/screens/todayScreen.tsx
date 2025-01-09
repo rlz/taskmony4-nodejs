@@ -26,7 +26,7 @@ export const TodayScreenBody = observer(function TodayScreenBody(): JSX.Element 
     return (
         <>
             <Stack p={1} gap={1}>
-                <Typography variant={'h6'} color={'primary'}>
+                <Typography variant={'h6'} textAlign={'center'} pt={1}>
                     {'Todo'}
                 </Typography>
                 {
@@ -44,7 +44,7 @@ export const TodayScreenBody = observer(function TodayScreenBody(): JSX.Element 
                 {
                     todayFinishedTasks.length > 0 && (
                         <>
-                            <Typography variant={'h6'} color={'primary'}>
+                            <Typography variant={'h6'} textAlign={'center'} pt={1}>
                                 {'Done Today'}
                             </Typography>
                             {

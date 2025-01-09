@@ -1,8 +1,7 @@
 import { CheckBoxOutlined } from '@mui/icons-material'
-import { Box, Paper, Stack, Typography, useTheme } from '@mui/material'
+import { Stack, styled, Typography } from '@mui/material'
 import React, { JSX } from 'react'
 
-import { useEngine } from '../engine/engine'
 import { FinishedTask } from '../engine/model'
 
 interface FinishedTaskViewProps {
@@ -11,45 +10,46 @@ interface FinishedTaskViewProps {
     onUndone: () => Promise<void> | void
 }
 
-const CHECK_STYLE = { lineHeight: 0 }
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const Action = styled('button')(({ theme }) => {
+    return {
+        backgroundColor: 'transparent',
+        lineHeight: 0,
+        color: theme.palette.text.primary,
+        border: 0,
+        padding: 0,
+        fontSize: theme.typography.body1.fontSize,
+        textAlign: 'left'
+    }
+})
 
 export function FinishedTaskView({ task, onUndone }: FinishedTaskViewProps): JSX.Element {
-    const engine = useEngine()
-    const theme = useTheme()
-
-    const color = engine.palette[task.category]
-
     return (
-        <Paper variant={'outlined'}>
-            <Stack direction={'row'} justifyContent={'flex-end'} gap={1}>
-                <Box
-                    bgcolor={color}
-                    fontSize={'0.8rem'}
-                    px={1}
-                    borderRadius={'0 0px 4px 4px'}
-                    color={theme.palette.getContrastText(color)}
+        <Stack direction={'row'} gap={1} alignItems={'center'}>
+            <Action onClick={onUndone}>
+                <CheckBoxOutlined />
+            </Action>
+            <Typography color={'textSecondary'} flexGrow={1} flexShrink={1}>{ task.title }</Typography>
+            <Stack>
+                <Typography
+                    variant={'body2'}
+                    fontStyle={'italic'}
+                    color={'secondary'}
+                    noWrap
+                    textAlign={'right'}
                 >
                     {task.category}
-                </Box>
-                <Box
-                    bgcolor={theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light}
-                    fontSize={'0.8rem'}
-                    mr={2}
-                    px={1}
-                    borderRadius={'0 0px 4px 4px'}
+                </Typography>
+                <Typography
+                    variant={'body2'}
+                    fontStyle={'italic'}
+                    noWrap
+                    textAlign={'right'}
                 >
-                    {task.date.toFormat('dd LLL yyyy')}
-                </Box>
+                    {task.finished.toFormat('dd LLL yyyy')}
+                </Typography>
             </Stack>
-            <Stack direction={'row'} gap={1} p={1} alignItems={'center'}>
-                <a
-                    style={CHECK_STYLE}
-                    onClick={onUndone}
-                >
-                    <CheckBoxOutlined />
-                </a>
-                <Typography color={'textSecondary'}>{ task.title }</Typography>
-            </Stack>
-        </Paper>
+
+        </Stack>
     )
 }

@@ -1,8 +1,7 @@
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon } from '@mui/icons-material'
-import { Box, Paper, Stack, Typography, useTheme } from '@mui/material'
+import { Stack, styled, Typography } from '@mui/material'
 import React, { JSX } from 'react'
 
-import { useEngine } from '../engine/engine'
 import { ActiveTask } from '../engine/model'
 import { useAppState } from '../state'
 
@@ -13,61 +12,64 @@ interface ActiveTaskViewProps {
     onDone: () => Promise<void> | void
 }
 
-const CHECK_STYLE = { lineHeight: 0 }
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const Action = styled('button')(({ theme }) => {
+    return {
+        backgroundColor: 'transparent',
+        color: theme.palette.text.primary,
+        border: 0,
+        padding: 0,
+        fontSize: theme.typography.body1.fontSize,
+        textAlign: 'left'
+    }
+})
 
 export function ActiveTaskView({ task, onDone, onEdit }: ActiveTaskViewProps): JSX.Element {
     const appState = useAppState()
-    const engine = useEngine()
-    const theme = useTheme()
 
     const age = appState.today.diff(task.date).as('days')
-    const color = engine.palette[task.category]
 
     return (
-        <Paper variant={'outlined'}>
-            <a onClick={onEdit}>
-                <Stack direction={'row'} justifyContent={'flex-end'} gap={1}>
-                    <Typography
-                        bgcolor={color}
-                        fontSize={'0.8rem'}
-                        px={1}
-                        borderRadius={'0 0px 4px 4px'}
-                        color={theme.palette.getContrastText(color)}
-                    >
-                        {task.category}
-                    </Typography>
-                    <Box
-                        bgcolor={theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light}
-                        fontSize={'0.8rem'}
-                        mr={2}
-                        px={1}
-                        borderRadius={'0 0px 4px 4px'}
-                    >
-                        {
-                            age >= 0
-                                ? (
-                                        age > 1 || age === 0 ? `${age} days` : `${age} day`
-                                    )
-                                : (
-                                        task.date.toFormat('dd LLL yyyy')
-                                    )
-                        }
-                    </Box>
-                </Stack>
-                <Stack direction={'row'} gap={1} p={1} alignItems={'center'}>
-                    <a
-                        style={CHECK_STYLE}
-                        onClick={async (e) => {
-                            e.stopPropagation()
-                            await onDone()
-                        }}
-                    >
-                        <CheckBoxOutlineBlankIcon />
-                    </a>
-                    <Box>{ task.title }</Box>
-                </Stack>
-            </a>
-        </Paper>
-
+        <Stack direction={'row'} gap={1} alignItems={'center'}>
+            <Action
+                sx={{ lineHeight: 0 }}
+                onClick={async (e) => {
+                    e.stopPropagation()
+                    await onDone()
+                }}
+            >
+                <CheckBoxOutlineBlankIcon />
+            </Action>
+            <Action sx={{ flexGrow: 1, flexShrink: 1 }} onClick={onEdit}>
+                { task.title }
+            </Action>
+            <Stack>
+                <Typography
+                    variant={'body2'}
+                    fontStyle={'italic'}
+                    color={'secondary'}
+                    noWrap
+                    textAlign={'right'}
+                >
+                    {task.category}
+                </Typography>
+                <Typography
+                    variant={'body2'}
+                    fontStyle={'italic'}
+                    noWrap
+                    textAlign={'right'}
+                >
+                    {
+                        age < 0
+                            ? task.date.toFormat('dd LLL yyyy')
+                            : (
+                                    age === 1
+                                        ? '1 day'
+                                        : `${age} days`
+                                )
+                    }
+                </Typography>
+            </Stack>
+        </Stack>
     )
 }

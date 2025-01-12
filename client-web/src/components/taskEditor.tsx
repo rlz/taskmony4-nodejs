@@ -169,6 +169,7 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
                         engine.categories.map(
                             c => (
                                 <Action
+                                    key={c}
                                     active={c === category}
                                     label={c}
                                     onClick={() => setCategory(c)}

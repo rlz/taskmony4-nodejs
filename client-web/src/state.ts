@@ -43,6 +43,10 @@ export class AppState {
         this.lastSyncDate = DateTime.utc()
     }
 
+    resetSyncDate() {
+        this.lastSyncDate = null
+    }
+
     clearLastSyncDate() {
         this.lastSyncDate = null
     }

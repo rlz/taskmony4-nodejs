@@ -5,6 +5,7 @@ dist
 dev-dist
 cashmony.cjs
 settings.json
+backups
 
 experiments.ts
 

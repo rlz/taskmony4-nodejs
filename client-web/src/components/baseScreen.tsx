@@ -33,7 +33,7 @@ export const BaseScreen = observer(function BaseScreen({ children }: PropsWithCh
                 <Toolbar>
                     <Typography variant={'h6'} sx={TITLE_STYLE}>{'Taskmony'}</Typography>
                     <IconButton onClick={async () => {
-                        appState.resetSyncDate()
+                        appState.clearLastSyncDate()
                         await syncAll(appState, authState, engine)
                     }}
                     >

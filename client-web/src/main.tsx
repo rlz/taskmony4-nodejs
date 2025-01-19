@@ -10,7 +10,7 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { installIntoGlobal } from 'iterator-helpers-polyfill'
 import { autorun } from 'mobx'
 import { observer } from 'mobx-react-lite'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { DndProvider } from 'react-dnd'
 import { TouchBackend } from 'react-dnd-touch-backend'
 import ReactDOM from 'react-dom/client'
@@ -121,8 +121,8 @@ function App() {
         })
     )
 
-    const appState = new AppState()
-    const engine = new Engine()
+    const appState = useMemo(() => new AppState(), [])
+    const engine = useMemo(() => new Engine(), [])
     const authState = useAuthState()
 
     useEffect(() => {

@@ -14,7 +14,7 @@ export class LocalStorage {
         engine.subscribe({
             onTaskChange: t => this.putTask(t),
             onChecklistChange: c => this.putChecklist(c),
-            onClearDate: () => this.clearData()
+            onClearData: () => this.clearData()
         })
 
         this.engine = engine

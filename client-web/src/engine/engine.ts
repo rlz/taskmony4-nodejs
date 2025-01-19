@@ -7,7 +7,7 @@ import { ActiveTask, Checklist, FinishedTask, Task } from './model'
 export interface EngineDataChangeListener {
     onTaskChange: (t: Task) => void | Promise<void>
     onChecklistChange: (c: Checklist) => void | Promise<void>
-    onClearDate: () => void | Promise<void>
+    onClearData: () => void | Promise<void>
 }
 
 export class Engine {
@@ -59,8 +59,9 @@ export class Engine {
     clearData() {
         this.activeTasks = []
         this.finishedTasks = []
+        this.checklists = []
 
-        this.subscribtions.forEach(i => i.onClearDate())
+        this.subscribtions.forEach(i => i.onClearData())
     }
 
     subscribe(listener: EngineDataChangeListener) {

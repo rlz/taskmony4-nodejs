@@ -32,10 +32,12 @@ export const BaseScreen = observer(function BaseScreen({ children }: PropsWithCh
             <AppBar position={'static'}>
                 <Toolbar>
                     <Typography variant={'h6'} sx={TITLE_STYLE}>{'Taskmony'}</Typography>
-                    <IconButton onClick={async () => {
-                        appState.clearLastSyncDate()
-                        await syncAll(appState, authState, engine)
-                    }}
+                    <IconButton
+                        color={'inherit'}
+                        onClick={async () => {
+                            appState.clearLastSyncDate()
+                            await syncAll(appState, authState, engine)
+                        }}
                     >
                         <CachedIcon />
                     </IconButton>

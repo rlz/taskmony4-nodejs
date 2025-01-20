@@ -1,5 +1,5 @@
 import { ArrowRight as ArrowRightIcon, CheckBox as CheckBoxIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, Edit as EditIcon } from '@mui/icons-material'
-import { Box, Collapse, IconButton, Paper, Stack, styled, Typography } from '@mui/material'
+import { Box, Button, Collapse, IconButton, Paper, Stack, styled, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { JSX, useState } from 'react'
 import { TransitionGroup } from 'react-transition-group'
@@ -45,6 +45,40 @@ export function ChecklistView({ checklist, onOpen, onEdit }: Props): JSX.Element
                     && (
                         <Collapse>
                             <Stack p={1} gap={0.5}>
+                                <Stack direction={'row'} gap={1}>
+                                    <Button
+                                        color={'secondary'}
+                                        size={'small'}
+                                        onClick={() => onEdit({
+                                            ...checklist,
+                                            items: checklist.items.map((item2) => {
+                                                return {
+                                                    name: item2.name,
+                                                    checked: true
+                                                }
+                                            }),
+                                            lastModified: DateTime.utc()
+                                        })}
+                                    >
+                                        {'Select All'}
+                                    </Button>
+                                    <Button
+                                        color={'secondary'}
+                                        size={'small'}
+                                        onClick={() => onEdit({
+                                            ...checklist,
+                                            items: checklist.items.map((item2) => {
+                                                return {
+                                                    name: item2.name,
+                                                    checked: false
+                                                }
+                                            }),
+                                            lastModified: DateTime.utc()
+                                        })}
+                                    >
+                                        {'Clear All'}
+                                    </Button>
+                                </Stack>
                                 {
                                     checklist.items.map((item, index) => {
                                         return (

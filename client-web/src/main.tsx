@@ -18,7 +18,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 // import { initFrontConfig } from 'rlz-engine/dist/client/config'
 import { NotFound } from 'rlz-engine/dist/client/screens/404'
 import { SignupSigninScreen } from 'rlz-engine/dist/client/screens/SignupSigninScreen'
-import { useAuthState } from 'rlz-engine/dist/client/state/auth'
+import { AuthState, AuthStateContext } from 'rlz-engine/dist/client/state/auth'
 
 import { BaseScreen } from './components/baseScreen'
 import { TasksTabs } from './components/tasksTabs'
@@ -127,7 +127,7 @@ function App() {
 
     const appState = useMemo(() => new AppState(), [])
     const engine = useMemo(() => new Engine(), [])
-    const authState = useAuthState()
+    const authState = useMemo(() => new AuthState(), [])
 
     useEffect(() => {
         void (async () => {
@@ -158,10 +158,12 @@ function App() {
                 <LocalizationProvider dateAdapter={AdapterLuxon}>
                     <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
                         <AppStateContext value={appState}>
-                            <EngineContext value={engine}>
-                                <CssBaseline />
-                                <WaitForInit />
-                            </EngineContext>
+                            <AuthStateContext value={authState}>
+                                <EngineContext value={engine}>
+                                    <CssBaseline />
+                                    <WaitForInit />
+                                </EngineContext>
+                            </AuthStateContext>
                         </AppStateContext>
                     </DndProvider>
                 </LocalizationProvider>

@@ -15,6 +15,7 @@ import { DndProvider } from 'react-dnd'
 import { TouchBackend } from 'react-dnd-touch-backend'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+// import { initFrontConfig } from 'rlz-engine/dist/client/config'
 import { NotFound } from 'rlz-engine/dist/client/screens/404'
 import { SignupSigninScreen } from 'rlz-engine/dist/client/screens/SignupSigninScreen'
 import { useAuthState } from 'rlz-engine/dist/client/state/auth'
@@ -33,6 +34,9 @@ import { TodayScreenBody } from './screens/todayScreen'
 import { AppState, AppStateContext } from './state'
 
 installIntoGlobal()
+// initFrontConfig({
+//     apiDomain: 'https://app.taskmony.ru/'
+// })
 
 function LoginScreen() {
     return <SignupSigninScreen appName={'Taskmony'} />

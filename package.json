@@ -36,7 +36,6 @@
         "vite-plugin-pwa": "^0.21.1"
     },
     "dependencies": {
-        "@fontsource/roboto": "^5.0.12",
         "@mui/x-date-pickers": "^7.23.3",
         "idb": "^8.0.1",
         "node-telegram-bot-api": "^0.66.0",

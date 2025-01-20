@@ -7,13 +7,13 @@ import { API_CHECKLIST_SCHEMA_V0, ApiChecklistV0 } from '../../../common/checkli
 
 export async function apiChecklists(auth: AuthParam, syncAfter: DateTime<true> | null): Promise<ApiItemsResponseV0<typeof API_COMPARISON_OBJECT_SCHEMA_V0>> {
     const queryString = syncAfter === null ? null : { syncAfter: syncAfter.toISO() }
-    return apiCall('get', 'checklists', auth, queryString, null, API_ITEMS_RESPONSE_SCHEMA_V0(API_COMPARISON_OBJECT_SCHEMA_V0))
+    return apiCall('GET', 'v0', 'checklists', auth, queryString, null, API_ITEMS_RESPONSE_SCHEMA_V0(API_COMPARISON_OBJECT_SCHEMA_V0))
 }
 
 export async function apiChecklistsByIds(ids: readonly string[], auth: AuthParam): Promise<ApiItemsResponseV0<typeof API_CHECKLIST_SCHEMA_V0>> {
     const req: ApiGetObjectsRequestV0 = { ids }
 
-    return apiCall('post', 'checklists/by-ids', auth, null, req, API_ITEMS_RESPONSE_SCHEMA_V0(API_CHECKLIST_SCHEMA_V0))
+    return apiCall('POST', 'v0', 'checklists/by-ids', auth, null, req, API_ITEMS_RESPONSE_SCHEMA_V0(API_CHECKLIST_SCHEMA_V0))
 }
 
 export async function apiPushChecklists(items: readonly ApiChecklistV0[], auth: AuthParam): Promise<void> {
@@ -21,5 +21,5 @@ export async function apiPushChecklists(items: readonly ApiChecklistV0[], auth: 
         items
     }
 
-    await apiCall('post', 'checklists/push', auth, null, req, z.undefined())
+    await apiCall('POST', 'v0', 'checklists/push', auth, null, req, z.undefined())
 }

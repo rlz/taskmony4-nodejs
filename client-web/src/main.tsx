@@ -10,7 +10,7 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { installIntoGlobal } from 'iterator-helpers-polyfill'
 import { autorun } from 'mobx'
 import { observer } from 'mobx-react-lite'
-import React, { useEffect, useMemo } from 'react'
+import React, { PropsWithChildren, ReactNode, useEffect, useMemo } from 'react'
 import { DndProvider } from 'react-dnd'
 import { TouchBackend } from 'react-dnd-touch-backend'
 import ReactDOM from 'react-dom/client'
@@ -114,6 +114,14 @@ const ROUTER = createBrowserRouter([
     }
 ])
 
+interface ProviderComposerProps {
+    providers: ((children: ReactNode) => ReactNode)[]
+}
+
+function ProviderComposer({ providers, children }: PropsWithChildren<ProviderComposerProps>): ReactNode {
+    return providers.reduce((el, provider) => provider(el), children)
+}
+
 function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
 
@@ -154,20 +162,19 @@ function App() {
 
     return (
         <React.StrictMode>
-            <ThemeProvider theme={theme}>
-                <LocalizationProvider dateAdapter={AdapterLuxon}>
-                    <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>
-                        <AppStateContext value={appState}>
-                            <AuthStateContext value={authState}>
-                                <EngineContext value={engine}>
-                                    <CssBaseline />
-                                    <WaitForInit />
-                                </EngineContext>
-                            </AuthStateContext>
-                        </AppStateContext>
-                    </DndProvider>
-                </LocalizationProvider>
-            </ThemeProvider>
+            <ProviderComposer
+                providers={[
+                    c => <ThemeProvider theme={theme}>{c}</ThemeProvider>,
+                    c => <LocalizationProvider dateAdapter={AdapterLuxon}>{c}</LocalizationProvider>,
+                    c => <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>{c}</DndProvider>,
+                    c => <AppStateContext value={appState}>{c}</AppStateContext>,
+                    c => <AuthStateContext value={authState}>{c}</AuthStateContext>,
+                    c => <EngineContext value={engine}>{c}</EngineContext>
+                ]}
+            >
+                <CssBaseline />
+                <WaitForInit />
+            </ProviderComposer>
         </React.StrictMode>
     )
 }

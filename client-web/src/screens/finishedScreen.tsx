@@ -31,7 +31,11 @@ export const FinishedScreenBody = observer(function FinishedScreenBody(): JSX.El
                             }
                             <FinishedTaskView
                                 task={i}
-                                onUndone={() => engine.pushTask({ ...i, finished: null })}
+                                onUndone={() => engine.pushTask({
+                                    ...i,
+                                    finished: null,
+                                    lastModified: DateTime.utc()
+                                })}
                             />
                         </Fragment>
                     )

@@ -35,7 +35,11 @@ export const TodayScreenBody = observer(function TodayScreenBody(): JSX.Element 
                             <ActiveTaskView
                                 key={i.id}
                                 task={i}
-                                onDone={() => engine.pushTask({ ...i, finished: appState.today, lastModified: DateTime.utc() })}
+                                onDone={() => engine.pushTask({
+                                    ...i,
+                                    finished: appState.today,
+                                    lastModified: DateTime.utc()
+                                })}
                                 onEdit={() => setEditTask(i)}
                             />
                         )
@@ -53,7 +57,11 @@ export const TodayScreenBody = observer(function TodayScreenBody(): JSX.Element 
                                         <FinishedTaskView
                                             key={i.id}
                                             task={i}
-                                            onUndone={() => engine.pushTask({ ...i, finished: null, lastModified: DateTime.utc() })}
+                                            onUndone={() => engine.pushTask({
+                                                ...i,
+                                                finished: null,
+                                                lastModified: DateTime.utc()
+                                            })}
                                         />
                                     )
                                 })

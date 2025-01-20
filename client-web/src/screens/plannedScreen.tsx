@@ -1,5 +1,6 @@
 import { Add as AddIcon } from '@mui/icons-material'
 import { Stack, Typography } from '@mui/material'
+import { DateTime } from 'luxon'
 import { observer } from 'mobx-react-lite'
 import React, { JSX, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
@@ -41,6 +42,19 @@ export const PlannedScreenBody = observer(function PlannedScreenBody(): JSX.Elem
         laterTasks.push(t)
     }
 
+    const activeTaskView = (t: ActiveTask): JSX.Element => (
+        <ActiveTaskView
+            key={t.id}
+            task={t}
+            onDone={() => engine.pushTask({
+                ...t,
+                finished: appState.today,
+                lastModified: DateTime.utc()
+            })}
+            onEdit={() => setEditTask(t)}
+        />
+    )
+
     return (
         <>
             <Stack p={1} gap={1}>
@@ -51,16 +65,7 @@ export const PlannedScreenBody = observer(function PlannedScreenBody(): JSX.Elem
                                 {'Tomorrow'}
                             </Typography>
                             {
-                                tomorrowTasks.map((i) => {
-                                    return (
-                                        <ActiveTaskView
-                                            key={i.id}
-                                            task={i}
-                                            onDone={() => engine.pushTask({ ...i, finished: appState.today })}
-                                            onEdit={() => setEditTask(i)}
-                                        />
-                                    )
-                                })
+                                tomorrowTasks.map(i => activeTaskView(i))
                             }
                         </>
                     )
@@ -72,16 +77,7 @@ export const PlannedScreenBody = observer(function PlannedScreenBody(): JSX.Elem
                                 {'In 2-10 days'}
                             </Typography>
                             {
-                                in10DaysTasks.map((i) => {
-                                    return (
-                                        <ActiveTaskView
-                                            key={i.id}
-                                            task={i}
-                                            onDone={() => engine.pushTask({ ...i, finished: appState.today })}
-                                            onEdit={() => setEditTask(i)}
-                                        />
-                                    )
-                                })
+                                in10DaysTasks.map(i => activeTaskView(i))
                             }
                         </>
                     )
@@ -93,16 +89,7 @@ export const PlannedScreenBody = observer(function PlannedScreenBody(): JSX.Elem
                                 {'Later'}
                             </Typography>
                             {
-                                laterTasks.map((i) => {
-                                    return (
-                                        <ActiveTaskView
-                                            key={i.id}
-                                            task={i}
-                                            onDone={() => engine.pushTask({ ...i, finished: appState.today })}
-                                            onEdit={() => setEditTask(i)}
-                                        />
-                                    )
-                                })
+                                laterTasks.map(i => activeTaskView(i))
                             }
                         </>
                     )

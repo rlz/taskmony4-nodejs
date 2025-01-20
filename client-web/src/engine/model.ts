@@ -28,4 +28,5 @@ export interface Checklist {
     readonly lastModified: DateTime<true>
     readonly title: string
     readonly items: readonly ChecklistItem[]
+    readonly deleted: boolean
 }

@@ -1,12 +1,14 @@
 import { Close as CloseIcon, Delete as DeleteIcon, DragIndicator as DragIndicatorIcon } from '@mui/icons-material'
-import { Box, Button, Drawer, IconButton, Stack, TextField, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Drawer, IconButton, Stack, TextField, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
+import { observer } from 'mobx-react-lite'
 import React, { CSSProperties, useEffect, useState } from 'react'
 import { JSX } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import { usePreview } from 'react-dnd-preview'
 import { uuidv7 } from 'uuidv7'
 
+import { useEngine } from '../engine/engine'
 import { Checklist, ChecklistItem } from '../engine/model'
 import { useAppState } from '../state'
 
@@ -19,11 +21,14 @@ interface Props {
 
 type ItemType = { id: number } & ChecklistItem
 
-export function ChecklistEditor({ open, checklist, onSave, onCancel }: Props): JSX.Element {
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const ChecklistEditor = observer(function ChecklistEditor({ open, checklist, onSave, onCancel }: Props): JSX.Element {
     const appState = useAppState()
+    const engine = useEngine()
 
     const [title, setTitle] = useState('')
     const [items, setItems] = useState<readonly ItemType[]>([])
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
     useEffect(() => {
         if (checklist !== undefined) {
@@ -37,7 +42,7 @@ export function ChecklistEditor({ open, checklist, onSave, onCancel }: Props): J
         }
     }, [checklist, appState.today])
 
-    const save = async () => {
+    const doSave = async () => {
         if (checklist !== undefined) {
             await onSave({
                 id: checklist.id,
@@ -45,20 +50,37 @@ export function ChecklistEditor({ open, checklist, onSave, onCancel }: Props): J
                 title,
                 items: items.map((i) => {
                     return { name: i.name, checked: i.checked }
-                })
+                }),
+                deleted: checklist.deleted
             })
         } else {
+            const deletedChecklist = engine.checklists.find(cl => cl.deleted)
             await onSave({
-                id: uuidv7(),
+                id: deletedChecklist === undefined ? uuidv7() : deletedChecklist.id,
                 lastModified: DateTime.utc(),
                 title,
                 items: items.map((i) => {
                     return { name: i.name, checked: i.checked }
-                })
+                }),
+                deleted: false
             })
             setTitle('')
             setItems([])
         }
+    }
+
+    const doDelete = async () => {
+        if (checklist === undefined) {
+            return
+        }
+
+        await onSave({
+            id: checklist.id,
+            lastModified: DateTime.utc(),
+            title: '',
+            items: [],
+            deleted: true
+        })
     }
 
     return (
@@ -87,7 +109,7 @@ export function ChecklistEditor({ open, checklist, onSave, onCancel }: Props): J
                     onChange={e => setTitle(e.target.value)}
                     onKeyUp={async (e) => {
                         if (e.key === 'Enter') {
-                            await save()
+                            await doSave()
                         }
                     }}
                 />
@@ -136,14 +158,52 @@ export function ChecklistEditor({ open, checklist, onSave, onCancel }: Props): J
                 </Button>
                 <Button
                     variant={'contained'}
-                    onClick={save}
+                    onClick={doSave}
                 >
                     {'Save'}
                 </Button>
+                {
+                    checklist !== undefined && (
+                        <>
+                            <Button
+                                variant={'contained'}
+                                color={'error'}
+                                onClick={() => setOpenDeleteDialog(true)}
+                                sx={{ mt: 2 }}
+                            >
+                                {'Delete'}
+                            </Button>
+                            <Dialog
+                                open={openDeleteDialog}
+                                onClose={() => setOpenDeleteDialog(false)}
+                            >
+                                <DialogTitle>
+                                    {'Delete checklist?'}
+                                </DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        {'This can not be undone!'}
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={() => setOpenDeleteDialog(false)} autoFocus>{'Cancel'}</Button>
+                                    <Button
+                                        onClick={async () => {
+                                            await doDelete()
+                                            setOpenDeleteDialog(false)
+                                        }}
+                                    >
+                                        {'Confirm'}
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                        </>
+                    )
+                }
             </Stack>
         </Drawer>
     )
-}
+})
 
 interface ItemProps {
     item: ItemType

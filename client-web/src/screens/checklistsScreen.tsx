@@ -21,7 +21,7 @@ export const ChecklistsScreenBody = observer(function ChecklistsScreenBody(): JS
         <>
             <Stack p={1} gap={1}>
                 {
-                    engine.checklists.map((i) => {
+                    engine.checklists.filter(i => !i.deleted).map((i) => {
                         return (
                             <ChecklistView
                                 key={i.id}

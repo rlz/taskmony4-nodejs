@@ -73,7 +73,8 @@ export async function syncAll(appState: AppState, authState: AuthState, engine: 
                         id: a.id,
                         lastModified: toValid(DateTime.fromISO(a.lastModified, { zone: 'utc' })),
                         title: a.title,
-                        items: a.items
+                        items: a.items,
+                        deleted: a.deleted === true
                     }
                 }),
             pushLocal: (items: readonly Checklist[]) => items.forEach(i => engine.pushChecklist(i)),

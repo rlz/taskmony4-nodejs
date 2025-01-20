@@ -7,7 +7,8 @@ export const API_CHECKLIST_SCHEMA_V0 = z.object({
     items: z.array(z.object({
         name: z.string(),
         checked: z.boolean()
-    }).readonly()).readonly()
+    }).readonly()).readonly(),
+    deleted: z.boolean().optional()
 }).readonly()
 
 export type ApiChecklistV0 = z.infer<typeof API_CHECKLIST_SCHEMA_V0>

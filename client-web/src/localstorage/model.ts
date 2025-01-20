@@ -46,6 +46,7 @@ export interface IdbChecklistV0 {
     readonly lastModified: number
     readonly title: string
     readonly items: readonly { readonly name: string, readonly checked: boolean }[]
+    readonly deleted?: boolean
 }
 
 export function checklistToIdb(checklist: Checklist): IdbChecklistV0 {
@@ -53,7 +54,8 @@ export function checklistToIdb(checklist: Checklist): IdbChecklistV0 {
         id: checklist.id,
         lastModified: checklist.lastModified.toMillis(),
         title: checklist.title,
-        items: checklist.items
+        items: checklist.items,
+        deleted: checklist.deleted
     }
 }
 
@@ -68,6 +70,7 @@ export function checklistFromIdb(checklist: IdbChecklistV0): Checklist {
         id: checklist.id,
         lastModified,
         title: checklist.title,
-        items: checklist.items
+        items: checklist.items,
+        deleted: checklist.deleted === true
     }
 }

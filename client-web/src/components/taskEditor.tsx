@@ -93,7 +93,7 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
         }
     }, [date, title, category, task, onSave])
 
-    useHotkeys('enter', () => save(), { preventDefault: true })
+    useHotkeys('enter', () => save(), { preventDefault: true, enableOnFormTags: ['INPUT'] })
 
     const today = appState.today
     const tomorrow = today.plus({ day: 1 })
@@ -127,11 +127,6 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
                     autoFocus
                     value={title}
                     onChange={e => setTitle(e.target.value)}
-                    onKeyUp={async (e) => {
-                        if (e.key === 'Enter') {
-                            await save()
-                        }
-                    }}
                 />
                 <DatePicker
                     label={'Start date'}

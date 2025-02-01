@@ -21,6 +21,7 @@ const Action = styled('button')(({ theme }) => {
         'padding': 0,
         'fontSize': theme.typography.body1.fontSize,
         'textAlign': 'left',
+        'cursor': 'pointer',
         '&:focus': {
             outline: 0
         }

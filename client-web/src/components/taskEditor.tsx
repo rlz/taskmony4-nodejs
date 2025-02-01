@@ -100,7 +100,7 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
     const weekend = today.isWeekend
         ? today.plus({ day: 3 }).endOf('week').startOf('day').minus({ day: 1 })
         : today.endOf('week').startOf('day').minus({ day: 1 })
-    const nextWeek = weekend.plus({ day: 2 })
+    const nextWeek = today.endOf('week').startOf('day').plus({ day: 1 })
     const nextMonth = today.endOf('month').startOf('day').plus({ day: 1 })
 
     return (
@@ -132,7 +132,7 @@ export function TaskEditor({ open, task, onSave, onCancel }: Props): JSX.Element
                     label={'Start date'}
                     format={'dd LLL yyyy'}
                     value={date}
-                    onAccept={d => setDate(d!)}
+                    onChange={d => setDate(d!)}
                     timezone={'system'}
                     slotProps={{
                         textField: {

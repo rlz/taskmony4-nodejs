@@ -15,7 +15,7 @@
     "license": "ISC",
     "type": "module",
     "devDependencies": {
-        "@stylistic/eslint-plugin": "^2.2.1",
+        "@stylistic/eslint-plugin": "^3.1.0",
         "@types/luxon": "^3.4.2",
         "@types/node": "^22.5.1",
         "@types/node-telegram-bot-api": "^0.64.7",
@@ -24,7 +24,7 @@
         "@types/ssh2": "^1.15.4",
         "@typescript-eslint/parser": "^8.3.0",
         "@vitejs/plugin-react": "^4.2.1",
-        "esbuild": "^0.24.2",
+        "esbuild": "^0.25.0",
         "esbuild-plugin-pino": "^2.2.1",
         "eslint": "^9.9.1",
         "eslint-plugin-simple-import-sort": "^12.0.0",
@@ -38,12 +38,15 @@
     "dependencies": {
         "@mui/x-date-pickers": "^7.23.3",
         "idb": "^8.0.1",
+        "mobx": "^6.13.6",
+        "mobx-react-lite": "^4.1.0",
         "node-telegram-bot-api": "^0.66.0",
         "react-dnd": "^16.0.1",
-        "react-dnd-preview": "^8.1.2",
+        "react-dnd-preview": "^9.0.0",
         "react-dnd-touch-backend": "^16.0.1",
         "react-hotkeys-hook": "^4.6.1",
         "react-transition-group": "^4.4.5",
-        "rlz-engine": "^1.0.10"
+        "rlz-engine": "^1.0.10",
+        "zustand": "^5.0.3"
     }
 }

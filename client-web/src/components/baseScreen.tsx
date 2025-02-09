@@ -18,12 +18,13 @@ const TITLE_STYLE: SxProps = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const BaseScreen = observer(function BaseScreen({ children }: PropsWithChildren): JSX.Element {
     const appState = useAppState()
+    const loggedIn = useAuthState(i => i.id !== null)
     const authState = useAuthState()
     const engine = useEngine()
     const location = useLocation()
     const navigate = useNavigate()
 
-    if (authState.id === null) {
+    if (!loggedIn) {
         return <Navigate to={'/signin'} />
     }
 
@@ -43,11 +44,12 @@ export const BaseScreen = observer(function BaseScreen({ children }: PropsWithCh
                     </IconButton>
                     <Button
                         onClick={async () => {
-                            if (authState.authParam === null) {
+                            const authParam = authState.getAuthParam()
+                            if (authParam === null) {
                                 throw Error('Not logged in')
                             }
 
-                            await apiLogout(authState.authParam)
+                            await apiLogout(authParam)
                             authState.logout()
                         }}
                         color={'inherit'}

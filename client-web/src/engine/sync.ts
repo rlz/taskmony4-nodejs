@@ -13,7 +13,7 @@ import { Engine } from './engine'
 import { Checklist, Task } from './model'
 
 export async function syncAll(appState: AppState, authState: AuthState, engine: Engine) {
-    const authParam = authState.authParam
+    const authParam = authState.getAuthParam()
 
     if (authParam === null) {
         return

@@ -18,7 +18,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 // import { initFrontConfig } from 'rlz-engine/dist/client/config'
 import { NotFound } from 'rlz-engine/dist/client/screens/404'
 import { SignupSigninScreen } from 'rlz-engine/dist/client/screens/SignupSigninScreen'
-import { AuthState, AuthStateContext } from 'rlz-engine/dist/client/state/auth'
+import { useAuthState } from 'rlz-engine/dist/client/state/auth'
 
 import { BaseScreen } from './components/baseScreen'
 import { TasksTabs } from './components/tasksTabs'
@@ -135,7 +135,7 @@ function App() {
 
     const appState = useMemo(() => new AppState(), [])
     const engine = useMemo(() => new Engine(), [])
-    const authState = useMemo(() => new AuthState(), [])
+    const authState = useAuthState()
 
     useEffect(() => {
         void (async () => {
@@ -143,7 +143,7 @@ function App() {
             await localStorage.loadData()
 
             autorun(async () => {
-                if (authState.authParam !== null) {
+                if (authState.id !== null) {
                     void engine.activeTasks
                     void engine.finishedTasks
                     void engine.checklists
@@ -168,7 +168,6 @@ function App() {
                     c => <LocalizationProvider dateAdapter={AdapterLuxon}>{c}</LocalizationProvider>,
                     c => <DndProvider backend={TouchBackend} options={{ enableMouseEvents: true }}>{c}</DndProvider>,
                     c => <AppStateContext value={appState}>{c}</AppStateContext>,
-                    c => <AuthStateContext value={authState}>{c}</AuthStateContext>,
                     c => <EngineContext value={engine}>{c}</EngineContext>
                 ]}
             >

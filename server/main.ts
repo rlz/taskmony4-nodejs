@@ -23,10 +23,9 @@ runServer({
     certDir: CERT_DIR,
     staticDir: PRODUCTION ? './web' : './client-web/dist',
     init: async (server) => {
-        const mongoStorage = new MongoStorage()
+        const mongoStorage = new MongoStorage('app-data')
 
-        const authStorage = new AuthStorage(mongoStorage)
-        await authStorage.init()
+        const authStorage = await AuthStorage.create(mongoStorage)
 
         const tasksStorage = new TasksStorage(mongoStorage)
         await tasksStorage.init()
